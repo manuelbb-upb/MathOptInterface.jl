@@ -1,7 +1,7 @@
 module Bridges
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 const CI = MOI.ConstraintIndex
@@ -78,7 +78,7 @@ package-specific functions or sets to be used if the non-standard bridges
 are not added. Therefore, you are recommended to use
 `model = MOI.instantiate(Package.Optimizer; with_bridge_type = T)` instead of
 `model = MOI.instantiate(Package.Optimizer)`. See
-[`MathOptInterface.instantiate`](@ref).
+[`VecMathOptInterface.instantiate`](@ref).
 
 ## Examples
 

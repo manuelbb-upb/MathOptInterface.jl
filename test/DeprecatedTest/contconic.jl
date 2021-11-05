@@ -1,6 +1,6 @@
 using Test
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIT = MOI.DeprecatedTest
 const MOIU = MOI.Utilities
 

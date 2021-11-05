@@ -3,9 +3,9 @@ module MOF
 import ..FileFormats
 import OrderedCollections
 import JSON
-import MathOptInterface
+import VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 const SCHEMA_PATH = joinpath(@__DIR__, "mof.1.0.schema.json")
 const VERSION = v"1.0"

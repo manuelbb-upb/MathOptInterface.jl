@@ -1,8 +1,8 @@
 module TestAttributes
 
 using Test
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 include("dummy.jl")
 

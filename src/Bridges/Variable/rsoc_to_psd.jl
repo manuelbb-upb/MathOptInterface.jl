@@ -2,9 +2,9 @@
     RSOCtoPSDBridge{T} <: Bridges.Variable.AbstractBridge
 
 Transforms constrained variables in
-[`MathOptInterface.RotatedSecondOrderCone`](@ref)
+[`VecMathOptInterface.RotatedSecondOrderCone`](@ref)
 to constrained variables in
-[`MathOptInterface.PositiveSemidefiniteConeTriangle`](@ref).
+[`VecMathOptInterface.PositiveSemidefiniteConeTriangle`](@ref).
 """
 struct RSOCtoPSDBridge{T} <: AbstractBridge
     # `t` is `variables[1]`

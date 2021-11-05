@@ -3,9 +3,9 @@ module SDPA
 # See http://plato.asu.edu/ftp/sdpa_format.txt
 
 import ..FileFormats
-import MathOptInterface
+import VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 MOI.Utilities.@model(
     Model,

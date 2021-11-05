@@ -6,8 +6,8 @@ using OrderedCollections # for OrderedDict in UniversalFallback
 import MutableArithmetics
 const MA = MutableArithmetics
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 const MOIU = MOI.Utilities # used in macro
 
@@ -26,12 +26,12 @@ function print_with_acronym(io::IO, s::AbstractString)
 end
 
 function replace_acronym(s::AbstractString)
-    s = replace(s, "MathOptInterface.Utilities" => "MOIU")
-    s = replace(s, "MathOptInterface.Bridges" => "MOIB")
+    s = replace(s, "VecMathOptInterface.Utilities" => "MOIU")
+    s = replace(s, "VecMathOptInterface.Bridges" => "MOIB")
     # TODO(odow): remove once deprecated tests are deleted.
-    s = replace(s, "MathOptInterface.DeprecatedTest" => "MOIT")
-    s = replace(s, "MathOptInterface.Test" => "MOIT")
-    s = replace(s, "MathOptInterface" => "MOI")
+    s = replace(s, "VecMathOptInterface.DeprecatedTest" => "MOIT")
+    s = replace(s, "VecMathOptInterface.Test" => "MOIT")
+    s = replace(s, "VecMathOptInterface" => "MOI")
     return s
 end
 

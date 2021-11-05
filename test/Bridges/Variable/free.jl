@@ -2,8 +2,8 @@ module TestVariableFree
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -79,8 +79,8 @@ function test_modification_multirow_vectoraffine_nonpos()
     )
     s = """
     variables: xpos, xneg
-    nonneg: [xpos, xneg] in MathOptInterface.Nonnegatives(2)
-    c: [4.0xpos + -4.0xneg + -1.0, 3.0xpos + -3.0xneg + -1.0] in MathOptInterface.Nonpositives(2)
+    nonneg: [xpos, xneg] in VecMathOptInterface.Nonnegatives(2)
+    c: [4.0xpos + -4.0xneg + -1.0, 3.0xpos + -3.0xneg + -1.0] in VecMathOptInterface.Nonpositives(2)
     maxobjective: xpos + -1.0xneg
     """
     model = MOI.Utilities.Model{Float64}()
@@ -88,7 +88,7 @@ function test_modification_multirow_vectoraffine_nonpos()
     MOI.Test.util_test_models_equal(mock, model, var_names, ["nonneg", "c"])
     s = """
     variables: x
-    c: [4.0x + -1.0, 3.0x + -1.0] in MathOptInterface.Nonpositives(2)
+    c: [4.0x + -1.0, 3.0x + -1.0] in VecMathOptInterface.Nonpositives(2)
     maxobjective: 1.0x
     """
     model = MOI.Utilities.Model{Float64}()
@@ -275,7 +275,7 @@ function test_linear_transform()
     )
     s = """
     variables: v1pos, v2pos, v1neg, v2neg
-    nonneg: [v1pos, v2pos, v1neg, v2neg] in MathOptInterface.Nonnegatives(4)
+    nonneg: [v1pos, v2pos, v1neg, v2neg] in VecMathOptInterface.Nonnegatives(4)
     c1: v1pos + -1.0v1neg + v2pos + -1.0v2neg >= 1.0
     c2: v1pos + -1.0v1neg + v2pos + -1.0v2neg <= 2.0
     minobjective: v1pos + -1.0v1neg + v2pos + -1.0v2neg

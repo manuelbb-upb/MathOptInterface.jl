@@ -1,11 +1,11 @@
 module TestFunctions
 
-using MathOptInterface: VectorOfVariables
+using VecMathOptInterface: VectorOfVariables
 using Test
-using MathOptInterface
+using VecMathOptInterface
 import MutableArithmetics
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MA = MutableArithmetics
 
 function runtests()

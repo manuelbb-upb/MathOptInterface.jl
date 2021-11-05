@@ -1,7 +1,7 @@
 module Issue980
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 
 abstract type StaticArray end
 (::Type{SA})(x...) where {SA<:StaticArray} = SA(x)

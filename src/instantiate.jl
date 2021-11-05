@@ -66,7 +66,7 @@ function _instantiate_and_check(optimizer_constructor)
         error(
             "The provided `optimizer_constructor` returned an object of type " *
             "$(typeof(optimizer)). Expected a " *
-            "MathOptInterface.AbstractOptimizer.",
+            "VecMathOptInterface.AbstractOptimizer.",
         )
     end
     if !is_empty(optimizer)
@@ -105,7 +105,7 @@ Creates an instance of optimizer by either:
 *  calling `optimizer_constructor()` if `optimizer_constructor` is callable.
 
 If `with_bridge_type` is not `nothing`, it enables all the bridges defined in
-the MathOptInterface.Bridges submodule with coefficient type `with_bridge_type`.
+the VecMathOptInterface.Bridges submodule with coefficient type `with_bridge_type`.
 
 If the optimizer created by `optimizer_constructor` does not support loading the
 problem incrementally (see [`supports_incremental_interface`](@ref)), then a

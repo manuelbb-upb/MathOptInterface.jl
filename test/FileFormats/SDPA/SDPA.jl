@@ -1,9 +1,9 @@
 module TestSDPA
 
-import MathOptInterface
+import VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 const SDPA = MOI.FileFormats.SDPA
 const SDPA_TEST_FILE = "test.sdpa"

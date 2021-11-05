@@ -2,8 +2,8 @@ module TestConstraintNormInfinity
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -85,9 +85,9 @@ function test_NormInfinity_1()
 
     s = """
     variables: x, y, z
-    nonneg: [x + -1.0y, x + -1.0z, x + y, x + z] in MathOptInterface.Nonnegatives(4)
-    x_eq: [-1.0 + x] in MathOptInterface.Zeros(1)
-    y_eq: [-0.5 + y] in MathOptInterface.Zeros(1)
+    nonneg: [x + -1.0y, x + -1.0z, x + y, x + z] in VecMathOptInterface.Nonnegatives(4)
+    x_eq: [-1.0 + x] in VecMathOptInterface.Zeros(1)
+    y_eq: [-0.5 + y] in VecMathOptInterface.Zeros(1)
     maxobjective: y + z
     """
     model = MOI.Utilities.Model{Float64}()
@@ -126,9 +126,9 @@ function test_NormInfinity_1()
 
     s = """
     variables: x, y, z
-    norminf: [1.0x, y, z] in MathOptInterface.NormInfinityCone(3)
-    x_eq: [-1.0 + x] in MathOptInterface.Zeros(1)
-    y_eq: [-0.5 + y] in MathOptInterface.Zeros(1)
+    norminf: [1.0x, y, z] in VecMathOptInterface.NormInfinityCone(3)
+    x_eq: [-1.0 + x] in VecMathOptInterface.Zeros(1)
+    y_eq: [-0.5 + y] in VecMathOptInterface.Zeros(1)
     maxobjective: y + z
     """
     model = MOI.Utilities.Model{Float64}()
@@ -210,8 +210,8 @@ function test_conic_NormInfinityCone_3()
 
     s = """
     variables: x, y1, y2, y3
-    nonneg1: [x + -1.0y1 + -3.0, x + -1.0y2 + -3.0, x + -1.0y3 + -3.0, x + y1 + 1.0, x + y2 + 1.0, x + y3 + 1.0] in MathOptInterface.Nonnegatives(6)
-    nonneg2: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in MathOptInterface.Nonnegatives(3)
+    nonneg1: [x + -1.0y1 + -3.0, x + -1.0y2 + -3.0, x + -1.0y3 + -3.0, x + y1 + 1.0, x + y2 + 1.0, x + y3 + 1.0] in VecMathOptInterface.Nonnegatives(6)
+    nonneg2: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in VecMathOptInterface.Nonnegatives(3)
     minobjective: x
     """
     model = MOI.Utilities.Model{Float64}()
@@ -249,8 +249,8 @@ function test_conic_NormInfinityCone_3()
 
     s = """
     variables: x, y1, y2, y3
-    norminf: [x + -1.0, y1 + 2.0, y2 + 2.0, y3 + 2.0] in MathOptInterface.NormInfinityCone(4)
-    nonneg: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in MathOptInterface.Nonnegatives(3)
+    norminf: [x + -1.0, y1 + 2.0, y2 + 2.0, y3 + 2.0] in VecMathOptInterface.NormInfinityCone(4)
+    nonneg: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in VecMathOptInterface.Nonnegatives(3)
     minobjective: x
     """
     model = MOI.Utilities.Model{Float64}()
@@ -365,9 +365,9 @@ function test_conic_NormOneCone_VectorOfVariables()
 
     s = """
     variables: x, y, z, u, v
-    nonneg: [x + -1.0u + -1.0v, u + -1.0y, v + -1.0z, u + y, v + z] in MathOptInterface.Nonnegatives(5)
-    x_eq: [-1.0 + x] in MathOptInterface.Zeros(1)
-    y_eq: [-0.5 + y] in MathOptInterface.Zeros(1)
+    nonneg: [x + -1.0u + -1.0v, u + -1.0y, v + -1.0z, u + y, v + z] in VecMathOptInterface.Nonnegatives(5)
+    x_eq: [-1.0 + x] in VecMathOptInterface.Zeros(1)
+    y_eq: [-0.5 + y] in VecMathOptInterface.Zeros(1)
     maxobjective: y + z
     """
     model = MOI.Utilities.Model{Float64}()
@@ -400,9 +400,9 @@ function test_conic_NormOneCone_VectorOfVariables()
 
     s = """
     variables: x, y, z
-    normone: [1.0x, y, z] in MathOptInterface.NormOneCone(3)
-    x_eq: [-1.0 + x] in MathOptInterface.Zeros(1)
-    y_eq: [-0.5 + y] in MathOptInterface.Zeros(1)
+    normone: [1.0x, y, z] in VecMathOptInterface.NormOneCone(3)
+    x_eq: [-1.0 + x] in VecMathOptInterface.Zeros(1)
+    y_eq: [-0.5 + y] in VecMathOptInterface.Zeros(1)
     maxobjective: y + z
     """
     model = MOI.Utilities.Model{Float64}()
@@ -478,8 +478,8 @@ function test_conic_NormOneCone()
     MOI.set(mock, MOI.ConstraintName(), nonneg[2], "nonneg2")
     s = """
     variables: x, y1, y2, y3, z1, z2, z3
-    nonneg1: [x + -1.0 + -1.0z1 + -1.0z2 + -1.0z3, z1 + -1.0y1 + -2.0, z2 + -1.0y2 + -2.0, z3 + -1.0y3 + -2.0, z1 + y1 + 2.0, z2 + y2 + 2.0, z3 + y3 + 2.0] in MathOptInterface.Nonnegatives(7)
-    nonneg2: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in MathOptInterface.Nonnegatives(3)
+    nonneg1: [x + -1.0 + -1.0z1 + -1.0z2 + -1.0z3, z1 + -1.0y1 + -2.0, z2 + -1.0y2 + -2.0, z3 + -1.0y3 + -2.0, z1 + y1 + 2.0, z2 + y2 + 2.0, z3 + y3 + 2.0] in VecMathOptInterface.Nonnegatives(7)
+    nonneg2: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in VecMathOptInterface.Nonnegatives(3)
     minobjective: x
     """
     model = MOI.Utilities.Model{Float64}()
@@ -516,8 +516,8 @@ function test_conic_NormOneCone()
     MOI.set(bridged_mock, MOI.ConstraintName(), nonneg[1], "nonneg")
     s = """
     variables: x, y1, y2, y3
-    normone: [x + -1.0, y1 + 2.0, y2 + 2.0, y3 + 2.0] in MathOptInterface.NormOneCone(4)
-    nonneg: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in MathOptInterface.Nonnegatives(3)
+    normone: [x + -1.0, y1 + 2.0, y2 + 2.0, y3 + 2.0] in VecMathOptInterface.NormOneCone(4)
+    nonneg: [y1 + 1.0, y2 + 1.0, y3 + 1.0] in VecMathOptInterface.Nonnegatives(3)
     minobjective: x
     """
     model = MOI.Utilities.Model{Float64}()

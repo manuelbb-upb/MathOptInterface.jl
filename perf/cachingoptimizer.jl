@@ -3,8 +3,8 @@
 #     https://github.com/jump-dev/MathOptInterface.jl/pull/390
 
 using BenchmarkTools
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 @MOIU.model Model () (MOI.Interval,) () () () (MOI.ScalarAffineFunction,) () ()

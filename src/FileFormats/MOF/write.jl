@@ -234,7 +234,7 @@ function head_name end
 # We don't need a fallback that throws an error because it is impossible for
 # this to be called for a set that is not defined in the MOIU Model constructor.
 
-# Add every field as the field is named in MathOptInterface.
+# Add every field as the field is named in VecMathOptInterface.
 function moi_to_object(
     set::SetType,
     ::Dict{MOI.VariableIndex,String},

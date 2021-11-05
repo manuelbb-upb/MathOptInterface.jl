@@ -1,9 +1,9 @@
 module TestMPS
 
-import MathOptInterface
+import VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 const MPS = MOI.FileFormats.MPS
 const MPS_TEST_FILE = "test.mps"

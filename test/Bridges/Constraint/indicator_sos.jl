@@ -2,8 +2,8 @@ module TestConstraintIndicatorSOS1
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -199,9 +199,9 @@ function test_model_equality()
     s = """
     variables: z, x, w
     maxobjective: z
-    sos1: [w, z] in MathOptInterface.SOS1([0.4, 0.6])
+    sos1: [w, z] in VecMathOptInterface.SOS1([0.4, 0.6])
     ineq: x + w <= 8.0
-    z in MathOptInterface.ZeroOne()
+    z in VecMathOptInterface.ZeroOne()
     """
     model = MOI.Utilities.Model{Float64}()
     MOI.Utilities.loadfromstring!(model, s)
@@ -218,7 +218,7 @@ function test_model_equality()
         2,
         (
             (MOI.VariableIndex, MOI.ZeroOne, 1),
-            (MOI.VectorOfVariables, MathOptInterface.SOS1{Float64}, 0),
+            (MOI.VectorOfVariables, VecMathOptInterface.SOS1{Float64}, 0),
             (MOI.ScalarAffineFunction{Float64}, MOI.LessThan{Float64}, 0),
         ),
         used_bridges = 1,
@@ -228,7 +228,7 @@ function test_model_equality()
     model = MOI.Utilities.Model{Float64}()
     sbridged = """
     variables: x, z
-    z in MathOptInterface.ZeroOne()
+    z in VecMathOptInterface.ZeroOne()
     maxobjective: z
     """
     MOI.Utilities.loadfromstring!(model, sbridged)

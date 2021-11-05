@@ -2,8 +2,8 @@ module TestVariableRSOCtoSOC
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -60,7 +60,7 @@ function test_rotatedsoc4()
     s2 = √2
     s = """
     variables: a, b, c, d
-    soc: [a, b, c, d] in MathOptInterface.SecondOrderCone(4)
+    soc: [a, b, c, d] in VecMathOptInterface.SecondOrderCone(4)
     c: $s2*a <= 2.0
     maxobjective: c + d
     """
@@ -86,7 +86,7 @@ function test_rotatedsoc4()
 
     s = """
     variables: t, u, x, y
-    rsoc: [t, u, x, y] in MathOptInterface.RotatedSecondOrderCone(4)
+    rsoc: [t, u, x, y] in VecMathOptInterface.RotatedSecondOrderCone(4)
     c: t + u <= 2.0
     maxobjective: x + y
     """

@@ -1,7 +1,7 @@
 module NL
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 
 include("NLExpr.jl")
 

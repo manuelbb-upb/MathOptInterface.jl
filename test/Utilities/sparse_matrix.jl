@@ -3,8 +3,8 @@ module TestSparseMatrix
 import SparseArrays
 using Test
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)

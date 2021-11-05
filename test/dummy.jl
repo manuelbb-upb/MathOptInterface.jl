@@ -1,5 +1,5 @@
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 abstract type AbstractDummyModel <: MOI.ModelLike end

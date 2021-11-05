@@ -2,7 +2,7 @@
     SingleBridgeOptimizer{BT<:AbstractBridge, OT<:MOI.ModelLike} <: AbstractBridgeOptimizer
 
 The `SingleBridgeOptimizer` bridges any objective functions supported by the
-bridge `BT`. This is in contrast with the [`MathOptInterface.Bridges.LazyBridgeOptimizer`](@ref)
+bridge `BT`. This is in contrast with the [`VecMathOptInterface.Bridges.LazyBridgeOptimizer`](@ref)
 which only bridges the objective functions that are unsupported by the internal model,
 even if they are supported by one of its bridges.
 """

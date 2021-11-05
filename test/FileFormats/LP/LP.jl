@@ -1,9 +1,9 @@
 module TestLP
 
-import MathOptInterface
+import VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 const LP = MOI.FileFormats.LP
 const LP_TEST_FILE = "test.lp"

@@ -2,8 +2,8 @@ module TestVariableZeros
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -37,7 +37,7 @@ function test_zeros()
     s = """
     variables: x, y, z
     x >= 0.0
-    cyz: [y, z] in MathOptInterface.Zeros(2)
+    cyz: [y, z] in VecMathOptInterface.Zeros(2)
     minobjective: x
     """
     model = MOI.Utilities.Model{Float64}()
@@ -90,8 +90,8 @@ function test_zeros()
     @test_throws err MOI.get(bridged_mock, MOI.ConstraintFunction(), c2)
 
     err = ArgumentError(
-        "Variable bridge of type `MathOptInterface.Bridges.Variable.ZerosBridge{Float64}`" *
-        " does not support accessing the attribute `MathOptInterface.Test.UnknownVariableAttribute()`.",
+        "Variable bridge of type `VecMathOptInterface.Bridges.Variable.ZerosBridge{Float64}`" *
+        " does not support accessing the attribute `VecMathOptInterface.Test.UnknownVariableAttribute()`.",
     )
     @test_throws err MOI.get(
         bridged_mock,
@@ -120,7 +120,7 @@ function test_zeros()
     @test MOI.get(bridged_mock, MOI.ConstraintDual(), cx) == 0.0
     @test MOI.get(bridged_mock, MOI.ConstraintDual(), c1) == 0.0
     @test MOI.get(bridged_mock, MOI.ConstraintDual(), c2) == 1.0
-    bridge = MathOptInterface.Bridges.Variable.ZerosBridge{Float64}
+    bridge = VecMathOptInterface.Bridges.Variable.ZerosBridge{Float64}
     attr = MOI.ConstraintDual()
     err = ArgumentError(
         "Bridge of type `$(bridge)` does not support accessing " *

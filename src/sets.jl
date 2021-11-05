@@ -774,7 +774,7 @@ end
 
 function _dual_set_square_error()
     return error(
-        """Dual of `PositiveSemidefiniteConeSquare` is not defined in MathOptInterface.
+        """Dual of `PositiveSemidefiniteConeSquare` is not defined in VecMathOptInterface.
            For more details see the comments in `src/Bridges/Constraint/square.jl`.""",
     )
 end

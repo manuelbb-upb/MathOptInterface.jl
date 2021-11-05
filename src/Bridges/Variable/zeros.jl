@@ -1,7 +1,7 @@
 """
     ZerosBridge{T} <: Bridges.Variable.AbstractBridge
 
-Transforms constrained variables in [`MathOptInterface.Zeros`](@ref) to zeros,
+Transforms constrained variables in [`VecMathOptInterface.Zeros`](@ref) to zeros,
 which ends up creating no variables in the underlying model.
 
 The bridged variables are therefore similar to parameters with zero values.
@@ -11,7 +11,7 @@ The functions cannot be unbridged, given a function, we cannot determine, if
 the bridged variables were used.
 
 The dual values cannot be determined by the bridge but they can be determined
-by the bridged optimizer using [`MathOptInterface.Utilities.get_fallback`](@ref)
+by the bridged optimizer using [`VecMathOptInterface.Utilities.get_fallback`](@ref)
 if a `CachingOptimizer` is used (since `ConstraintFunction` cannot be got
 as functions cannot be unbridged).
 """

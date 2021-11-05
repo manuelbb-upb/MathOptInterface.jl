@@ -1,8 +1,8 @@
 module TestErrors
 
 using Test
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 include("dummy.jl")
 
@@ -13,7 +13,7 @@ function test_errors_fallback_AddVariableNotAllowed()
         MOI.add_variable(model)
     catch err
         @test sprint(showerror, err) ==
-              "MathOptInterface.AddVariableNotAllowed:" *
+              "VecMathOptInterface.AddVariableNotAllowed:" *
               " Adding variables cannot be performed. You may want to use a" *
               " `CachingOptimizer` in `AUTOMATIC` mode or you may need to call" *
               " `reset_optimizer` before doing this operation if the" *
@@ -121,8 +121,8 @@ function test_errors_DeleteNotAllowed()
         MOI.delete(model, vi)
     catch err
         @test sprint(showerror, err) ==
-              "MathOptInterface.DeleteNotAllowed{MathOptInterface.VariableIndex}:" *
-              " Deleting the index MathOptInterface.VariableIndex(1) cannot be" *
+              "VecMathOptInterface.DeleteNotAllowed{VecMathOptInterface.VariableIndex}:" *
+              " Deleting the index VecMathOptInterface.VariableIndex(1) cannot be" *
               " performed. You may want to use a `CachingOptimizer` in" *
               " `AUTOMATIC` mode or you may need to call `reset_optimizer`" *
               " before doing this operation if the `CachingOptimizer` is in" *
@@ -133,8 +133,8 @@ function test_errors_DeleteNotAllowed()
         MOI.delete(model, ci)
     catch err
         @test sprint(showerror, err) ==
-              "$(MathOptInterface.DeleteNotAllowed{MathOptInterface.ConstraintIndex{MathOptInterface.VariableIndex,MathOptInterface.EqualTo{Float64}}}):" *
-              " Deleting the index $(MathOptInterface.ConstraintIndex{MathOptInterface.VariableIndex,MathOptInterface.EqualTo{Float64}}(1))" *
+              "$(VecMathOptInterface.DeleteNotAllowed{VecMathOptInterface.ConstraintIndex{VecMathOptInterface.VariableIndex,VecMathOptInterface.EqualTo{Float64}}}):" *
+              " Deleting the index $(VecMathOptInterface.ConstraintIndex{VecMathOptInterface.VariableIndex,VecMathOptInterface.EqualTo{Float64}}(1))" *
               " cannot be performed. You may want to use a `CachingOptimizer`" *
               " in `AUTOMATIC` mode or you may need to call `reset_optimizer`" *
               " before doing this operation if the `CachingOptimizer` is in" *
@@ -228,9 +228,9 @@ function test_errors_ModifyNotAllowed_constraint()
     err = MOI.ModifyConstraintNotAllowed(ci, change)
     @test_throws err MOI.modify(model, ci, change)
     @test sprint(showerror, err) ==
-          "$(MathOptInterface.ModifyConstraintNotAllowed{MathOptInterface.VariableIndex,MathOptInterface.EqualTo{Float64},MathOptInterface.ScalarConstantChange{Float64}}):" *
-          " Modifying the constraints $(MathOptInterface.ConstraintIndex{MathOptInterface.VariableIndex,MathOptInterface.EqualTo{Float64}}(1))" *
-          " with MathOptInterface.ScalarConstantChange{Float64}(1.0) cannot" *
+          "$(VecMathOptInterface.ModifyConstraintNotAllowed{VecMathOptInterface.VariableIndex,VecMathOptInterface.EqualTo{Float64},VecMathOptInterface.ScalarConstantChange{Float64}}):" *
+          " Modifying the constraints $(VecMathOptInterface.ConstraintIndex{VecMathOptInterface.VariableIndex,VecMathOptInterface.EqualTo{Float64}}(1))" *
+          " with VecMathOptInterface.ScalarConstantChange{Float64}(1.0) cannot" *
           " be performed. You may want to use a `CachingOptimizer` in" *
           " `AUTOMATIC` mode or you may need to call `reset_optimizer`" *
           " before doing this operation if the `CachingOptimizer` is in" *
@@ -244,8 +244,8 @@ function test_errors_ModifyNotAllowed_objective()
     err = MOI.ModifyObjectiveNotAllowed(change)
     @test_throws err MOI.modify(model, attr, change)
     @test sprint(showerror, err) ==
-          "$(MathOptInterface.ModifyObjectiveNotAllowed{MathOptInterface.ScalarConstantChange{Float64}}):" *
-          " Modifying the objective function with $(MathOptInterface.ScalarConstantChange{Float64}(1.0))" *
+          "$(VecMathOptInterface.ModifyObjectiveNotAllowed{VecMathOptInterface.ScalarConstantChange{Float64}}):" *
+          " Modifying the objective function with $(VecMathOptInterface.ScalarConstantChange{Float64}(1.0))" *
           " cannot be performed. You may want to use a `CachingOptimizer`" *
           " in `AUTOMATIC` mode or you may need to call `reset_optimizer`" *
           " before doing this operation if the `CachingOptimizer` is in" *
@@ -287,7 +287,7 @@ function test_errors_ResultIndexBoundsError()
         showerror,
         MOI.ResultIndexBoundsError(MOI.VariablePrimal(1), 0),
     ) ==
-          "Result index of attribute MathOptInterface.VariablePrimal(1) out of" *
+          "Result index of attribute VecMathOptInterface.VariablePrimal(1) out of" *
           " bounds. There are currently 0 solution(s) in the model."
 end
 
@@ -296,7 +296,7 @@ function test_errors_InvalidCalbackUsage()
         showerror,
         MOI.InvalidCallbackUsage(MOI.LazyConstraintCallback(), MOI.UserCut(1)),
     ) ==
-          "InvalidCallbackUsage: Cannot submit $(MOI.UserCut(1)) inside a MathOptInterface.LazyConstraintCallback()."
+          "InvalidCallbackUsage: Cannot submit $(MOI.UserCut(1)) inside a VecMathOptInterface.LazyConstraintCallback()."
 end
 
 function runtests()

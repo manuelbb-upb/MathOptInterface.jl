@@ -19,7 +19,7 @@ end
 """
     IndexMap()
 
-The dictionary-like object returned by [`MathOptInterface.copy_to`](@ref).
+The dictionary-like object returned by [`VecMathOptInterface.copy_to`](@ref).
 """
 function IndexMap()
     var_map = CleverDicts.CleverDict{MOI.VariableIndex,MOI.VariableIndex}()

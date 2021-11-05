@@ -1,5 +1,5 @@
-name = "MathOptInterface"
-uuid = "b8f27783-ece8-5eb3-8dc8-9495eed66fee"
+name = "VecMathOptInterface"
+uuid = "a6b939ee-c061-4853-9c69-78e5598560e6"
 version = "0.10.4"
 
 [deps]

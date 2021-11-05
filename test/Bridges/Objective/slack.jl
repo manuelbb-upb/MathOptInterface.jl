@@ -2,8 +2,8 @@ module TestObjectiveSlack
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -296,7 +296,7 @@ function test_original()
         ],
     )
     err = ArgumentError(
-        "Objective bridge of type `$(MathOptInterface.Bridges.Objective.SlackBridge{Float64,MathOptInterface.ScalarQuadraticFunction{Float64},MathOptInterface.ScalarQuadraticFunction{Float64}})`" *
+        "Objective bridge of type `$(VecMathOptInterface.Bridges.Objective.SlackBridge{Float64,VecMathOptInterface.ScalarQuadraticFunction{Float64},VecMathOptInterface.ScalarQuadraticFunction{Float64}})`" *
         " does not support modifying the objective sense. As a workaround, set" *
         " the sense to `MOI.FEASIBILITY_SENSE` to clear the objective function" *
         " and bridges.",

@@ -1,9 +1,9 @@
 module CBF
 
 import ..FileFormats
-import MathOptInterface
+import VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 MOI.Utilities.@model(
     Model,

@@ -2,8 +2,8 @@ module Constraint
 
 using OrderedCollections # for OrderedDict in Map
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 const MOIB = MOI.Bridges
 

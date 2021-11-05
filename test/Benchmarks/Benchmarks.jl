@@ -1,6 +1,6 @@
-using MathOptInterface, Test
+using VecMathOptInterface, Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 const NUM_BENCHMARKS = length(MOI.Benchmarks.BENCHMARKS)

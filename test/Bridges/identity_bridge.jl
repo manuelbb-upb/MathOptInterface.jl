@@ -1,8 +1,8 @@
 # Dummy bridges used for testing
 module IdentityBridges
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIB = MOI.Bridges
 
 const F{T} = MOI.ScalarAffineFunction{T}

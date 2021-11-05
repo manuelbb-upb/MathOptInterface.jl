@@ -15,7 +15,7 @@ end
 
 This is called by `AbstractModel` to inform the `constraints` field that a
 variable has been added. This is similar to
-[`MathOptInterface.add_variable`](@ref) except that it should return `nothing`.
+[`VecMathOptInterface.add_variable`](@ref) except that it should return `nothing`.
 """
 function _add_variable end
 
@@ -534,14 +534,14 @@ functions, `typed_scalar_functions` typed scalar functions, `vector_functions`
 vector functions and `typed_vector_functions` typed vector functions.
 To give no set/function, write `()`, to give one set `S`, write `(S,)`.
 
-The function [`MathOptInterface.VariableIndex`](@ref) should not be given in
-`scalar_functions`. The model supports [`MathOptInterface.VariableIndex`](@ref)-in-`S`
-constraints where `S` is [`MathOptInterface.EqualTo`](@ref),
-[`MathOptInterface.GreaterThan`](@ref), [`MathOptInterface.LessThan`](@ref),
-[`MathOptInterface.Interval`](@ref), [`MathOptInterface.Integer`](@ref),
-[`MathOptInterface.ZeroOne`](@ref), [`MathOptInterface.Semicontinuous`](@ref)
-or [`MathOptInterface.Semiinteger`](@ref). The sets supported
-with the [`MathOptInterface.VariableIndex`](@ref) cannot be controlled from the
+The function [`VecMathOptInterface.VariableIndex`](@ref) should not be given in
+`scalar_functions`. The model supports [`VecMathOptInterface.VariableIndex`](@ref)-in-`S`
+constraints where `S` is [`VecMathOptInterface.EqualTo`](@ref),
+[`VecMathOptInterface.GreaterThan`](@ref), [`VecMathOptInterface.LessThan`](@ref),
+[`VecMathOptInterface.Interval`](@ref), [`VecMathOptInterface.Integer`](@ref),
+[`VecMathOptInterface.ZeroOne`](@ref), [`VecMathOptInterface.Semicontinuous`](@ref)
+or [`VecMathOptInterface.Semiinteger`](@ref). The sets supported
+with the [`VecMathOptInterface.VariableIndex`](@ref) cannot be controlled from the
 macro, use the [`UniversalFallback`](@ref) to support more sets.
 
 This macro creates a model specialized for specific types of constraint,
@@ -551,9 +551,9 @@ constraints and attributes, use [`UniversalFallback`](@ref).
 
 If `is_optimizer = true`, the resulting struct is a
 of [`GenericOptimizer`](@ref), which is a subtype of
-[`MathOptInterface.AbstractOptimizer`](@ref), otherwise, it is a
+[`VecMathOptInterface.AbstractOptimizer`](@ref), otherwise, it is a
 [`GenericModel`](@ref), which is a subtype of
-[`MathOptInterface.ModelLike`](@ref).
+[`VecMathOptInterface.ModelLike`](@ref).
 
 ### Examples
 
@@ -572,7 +572,7 @@ The model describing an linear program would be:
     )
 ```
 
-Let `MOI` denote `MathOptInterface`, `MOIU` denote `MOI.Utilities`.
+Let `MOI` denote `VecMathOptInterface`, `MOIU` denote `MOI.Utilities`.
 The macro would create the following types with
 [`struct_of_constraint_code`](@ref):
 ```julia
@@ -610,7 +610,7 @@ struct LPModelFunctionConstraints{T} <: MOIU.StructOfConstraints
 end
 const LPModel{T} = MOIU.GenericModel{T,MOIU.ObjectiveContainer{T},MOIU.VariablesContainer{T},LPModelFunctionConstraints{T}}
 ```
-The type `LPModel` implements the MathOptInterface API except methods specific
+The type `LPModel` implements the VecMathOptInterface API except methods specific
 to optimizers like `optimize!` or `get` with `VariablePrimal`.
 """
 macro model(
@@ -811,14 +811,14 @@ Model
 
 # This export makes the type be printed as:
 # ```julia
-# julia> Base.show(IOContext(stdout, :compact => true), MathOptInterface.Utilities.Model)
+# julia> Base.show(IOContext(stdout, :compact => true), VecMathOptInterface.Utilities.Model)
 # Model{T} where T
-# julia> print(MathOptInterface.Utilities.Model)
-# MathOptInterface.Utilities.Model{T} where T
-# julia> MathOptInterface.Utilities.Model
-# MathOptInterface.Utilities.Model{T} where T (alias for MathOptInterface.Utilities.GenericModel{T, MathOptInterface.Utilities.ObjectiveContainer{T}, MathOptInterface.Utilities.VariablesContainer{T}, MathOptInterface.Utilities.ModelFunctionConstraints{T}} where T)
+# julia> print(VecMathOptInterface.Utilities.Model)
+# VecMathOptInterface.Utilities.Model{T} where T
+# julia> VecMathOptInterface.Utilities.Model
+# VecMathOptInterface.Utilities.Model{T} where T (alias for VecMathOptInterface.Utilities.GenericModel{T, VecMathOptInterface.Utilities.ObjectiveContainer{T}, VecMathOptInterface.Utilities.VariablesContainer{T}, VecMathOptInterface.Utilities.ModelFunctionConstraints{T}} where T)
 # ```
 # As MOI is not doing `using .Utilities` and is not exporting `Model`, the user
 # still needs to do `MOI.Utilities.Model` unless he does
-# `using MathOptInterface.Utilities`.
+# `using VecMathOptInterface.Utilities`.
 export Model

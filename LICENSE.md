@@ -1,4 +1,5 @@
-The MathOptInterface.jl package is licensed under the MIT "Expat" License:
+The MathOptInterface.jl package is licensed under the MIT "Expat" License.
+The modifications of this fork (VecMathOptInterface.jl) are also licensed under the MIT "Expat" License:
 
 > Copyright (c) 2017: Miles Lubin and contributors
 > Copyright (c) 2017: Google Inc.

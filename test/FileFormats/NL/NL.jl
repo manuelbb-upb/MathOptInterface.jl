@@ -1,7 +1,7 @@
 module TestNLModel
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 const NL = MOI.FileFormats.NL
 
 using Test

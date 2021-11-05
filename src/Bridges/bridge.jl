@@ -2,19 +2,19 @@
     AbstractBridge
 
 Represents a bridged constraint or variable in a
-[`MathOptInterface.Bridges.AbstractBridgeOptimizer`](@ref). It contains the
+[`VecMathOptInterface.Bridges.AbstractBridgeOptimizer`](@ref). It contains the
 indices of the variables and constraints that it has created in the model. These
-can be obtained using [`MathOptInterface.NumberOfVariables`](@ref),
-[`MathOptInterface.ListOfVariableIndices`](@ref),
-[`MathOptInterface.NumberOfConstraints`](@ref) and
-[`MathOptInterface.ListOfConstraintIndices`](@ref) using
-[`MathOptInterface.get`](@ref) with the bridge in place of the
-[`MathOptInterface.ModelLike`](@ref). Attributes of the bridged model such as
-[`MathOptInterface.ConstraintDual`](@ref) and
-[`MathOptInterface.ConstraintPrimal`](@ref), can be obtained using
-[`MathOptInterface.get`](@ref) with the bridge in place of the constraint index.
+can be obtained using [`VecMathOptInterface.NumberOfVariables`](@ref),
+[`VecMathOptInterface.ListOfVariableIndices`](@ref),
+[`VecMathOptInterface.NumberOfConstraints`](@ref) and
+[`VecMathOptInterface.ListOfConstraintIndices`](@ref) using
+[`VecMathOptInterface.get`](@ref) with the bridge in place of the
+[`VecMathOptInterface.ModelLike`](@ref). Attributes of the bridged model such as
+[`VecMathOptInterface.ConstraintDual`](@ref) and
+[`VecMathOptInterface.ConstraintPrimal`](@ref), can be obtained using
+[`VecMathOptInterface.get`](@ref) with the bridge in place of the constraint index.
 These calls are used by the
-[`MathOptInterface.Bridges.AbstractBridgeOptimizer`](@ref) to communicate with
+[`VecMathOptInterface.Bridges.AbstractBridgeOptimizer`](@ref) to communicate with
 the bridge so they should be implemented by the bridge.
 """
 abstract type AbstractBridge end

@@ -1,7 +1,7 @@
 module Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 using Test
@@ -127,7 +127,7 @@ setup_test(::Any, ::MOI.ModelLike, ::Config) = nothing
         warn_unsupported::Bool = false,
     )
 
-Run all tests in `MathOptInterface.Test` on `model`.
+Run all tests in `VecMathOptInterface.Test` on `model`.
 
 ## Configuration arguments
 
@@ -151,8 +151,8 @@ See also: [`setup_test`](@ref).
 ## Example
 
 ```julia
-config = MathOptInterface.Test.Config()
-MathOptInterface.Test.runtests(
+config = VecMathOptInterface.Test.Config()
+VecMathOptInterface.Test.runtests(
     model,
     config;
     include = ["test_linear_"],

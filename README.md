@@ -1,4 +1,7 @@
-# MathOptInterface
+# VecMathOptInterface
+### MathOptInterface with multiple objectives
+
+## Links and Information for the Original Package
 
 | **Documentation** | **Build Status** | **Social** |
 |:-----------------:|:----------------:|:----------:|

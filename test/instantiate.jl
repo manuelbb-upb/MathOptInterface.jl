@@ -1,8 +1,8 @@
 module TestInstantiate
 
 using Test
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 struct DummyOptimizer <: MOI.AbstractOptimizer end
 MOI.is_empty(::DummyOptimizer) = true
@@ -66,7 +66,7 @@ function _test_instantiate(T)
 
     err = ErrorException(
         "The provided `optimizer_constructor` returned an object of type " *
-        "$Int. Expected a MathOptInterface.AbstractOptimizer.",
+        "$Int. Expected a VecMathOptInterface.AbstractOptimizer.",
     )
     h() = 1
     @test_throws err MOI.instantiate(h)

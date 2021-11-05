@@ -1,7 +1,7 @@
 using Test
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 
 @testset "hs071-manual" begin
     d = MOI.DeprecatedTest.HS071(true, true)

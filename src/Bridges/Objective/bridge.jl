@@ -1,7 +1,7 @@
 """
     AbstractBridge
 
-Subtype of [`MathOptInterface.Bridges.AbstractBridge`](@ref) for objective
+Subtype of [`VecMathOptInterface.Bridges.AbstractBridge`](@ref) for objective
 bridges.
 """
 abstract type AbstractBridge <: MOIB.AbstractBridge end

@@ -2,8 +2,8 @@ module TestPrint
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 function runtests()
@@ -612,25 +612,25 @@ function test_nlp_no_objective()
 end
 
 function test_print_with_acronym()
-    @test sprint(MOIU.print_with_acronym, "MathOptInterface") == "MOI"
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterface") == "MOI"
     @test sprint(
         MOIU.print_with_acronym,
-        "MathOptInterface.MathOptInterface",
+        "VecMathOptInterface.VecMathOptInterface",
     ) == "MOI.MOI"
     @test sprint(
         MOIU.print_with_acronym,
-        "MathOptInterface.Utilities.MathOptInterface",
+        "VecMathOptInterface.Utilities.VecMathOptInterface",
     ) == "MOIU.MOI"
-    @test sprint(MOIU.print_with_acronym, "MathOptInterfaceXXBridges") ==
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterfaceXXBridges") ==
           "MOIXXBridges"
-    @test sprint(MOIU.print_with_acronym, "MathOptInterface.BridgesXX") ==
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterface.BridgesXX") ==
           "MOIBXX"
-    @test sprint(MOIU.print_with_acronym, "MathOptInterface.Test.x") == "MOIT.x"
-    @test sprint(MOIU.print_with_acronym, "MathOptInterface.x.Test") ==
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterface.Test.x") == "MOIT.x"
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterface.x.Test") ==
           "MOI.x.Test"
-    @test sprint(MOIU.print_with_acronym, "MathOptInterface.Utilities.Test") ==
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterface.Utilities.Test") ==
           "MOIU.Test"
-    @test sprint(MOIU.print_with_acronym, "MathOptInterface.Utilities.Test") ==
+    @test sprint(MOIU.print_with_acronym, "VecMathOptInterface.Utilities.Test") ==
           "MOIU.Test"
     return
 end

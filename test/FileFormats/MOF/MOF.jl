@@ -2,10 +2,10 @@ module TestMOF
 
 import JSON
 import JSONSchema
-import MathOptInterface
+import VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 const MOF = MOI.FileFormats.MOF
 

@@ -1,8 +1,8 @@
 module TestDeprecate
 
 using Test
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function test_deprecations_N()
     attr = MOI.VariablePrimal()

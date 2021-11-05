@@ -1,4 +1,4 @@
-module MathOptInterface
+module VecMathOptInterface
 
 """
     ModelLike

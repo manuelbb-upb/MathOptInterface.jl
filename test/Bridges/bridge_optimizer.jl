@@ -2,9 +2,9 @@ module TestBridgeOptimizer
 
 using Test
 
-using MathOptInterface
+using VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)

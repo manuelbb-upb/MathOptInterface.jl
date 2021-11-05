@@ -1,6 +1,6 @@
 using Printf
 
-_drop_moi(s) = replace(string(s), "MathOptInterface." => "")
+_drop_moi(s) = replace(string(s), "VecMathOptInterface." => "")
 
 struct _PrintOptions{T<:MIME}
     simplify_coefficients::Bool

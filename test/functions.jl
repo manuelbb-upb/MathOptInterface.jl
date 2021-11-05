@@ -1,8 +1,8 @@
 module TestFunctions
 
 using Test
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 """
     test_isbits()

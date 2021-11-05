@@ -1,7 +1,7 @@
 module FileFormats
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 
 import CodecBzip2
 import CodecZlib

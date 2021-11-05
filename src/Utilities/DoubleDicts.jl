@@ -1,8 +1,8 @@
 module DoubleDicts
 
-import MathOptInterface
+import VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 abstract type AbstractDoubleDict{V} <: AbstractDict{MOI.ConstraintIndex,V} end
 

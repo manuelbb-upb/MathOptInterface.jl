@@ -2,10 +2,10 @@ module TestMatrixOfConstraints
 
 using Test
 
-import MathOptInterface
+import VecMathOptInterface
 import SparseArrays
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)

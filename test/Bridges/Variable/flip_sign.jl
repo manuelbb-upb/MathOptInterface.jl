@@ -2,8 +2,8 @@ module TestVariableFlipSign
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 include("../utilities.jl")
 
@@ -64,22 +64,22 @@ function test_NonposToNonneg()
     con_w = MOI.get(
         mock,
         MOI.ListOfConstraintIndices{
-            MathOptInterface.VectorOfVariables,
-            MathOptInterface.Zeros,
+            VecMathOptInterface.VectorOfVariables,
+            VecMathOptInterface.Zeros,
         }(),
     )[1]
     con_yz = MOI.get(
         mock,
         MOI.ListOfConstraintIndices{
-            MathOptInterface.VectorOfVariables,
-            MathOptInterface.Nonnegatives,
+            VecMathOptInterface.VectorOfVariables,
+            VecMathOptInterface.Nonnegatives,
         }(),
     )
     con_ex = MOI.get(
         mock,
         MOI.ListOfConstraintIndices{
-            MathOptInterface.VectorAffineFunction{Float64},
-            MathOptInterface.Zeros,
+            VecMathOptInterface.VectorAffineFunction{Float64},
+            VecMathOptInterface.Zeros,
         }(),
     )[1]
 
@@ -97,17 +97,17 @@ function test_NonposToNonneg()
     con_v = MOI.get(
         bridged_mock,
         MOI.ListOfConstraintIndices{
-            MathOptInterface.VectorOfVariables,
-            MathOptInterface.Nonpositives,
+            VecMathOptInterface.VectorOfVariables,
+            VecMathOptInterface.Nonpositives,
         }(),
     )[1]
     MOI.set(bridged_mock, MOI.ConstraintName(), con_v, "cv")
     s = """
     variables: x, y, z, w
-    cw: [w] in MathOptInterface.Zeros(1)
-    cy: [y] in MathOptInterface.Nonnegatives(1)
-    cz: [z] in MathOptInterface.Nonnegatives(1)
-    cex: [1*x + -1*w + 4.0, -1*y + 3.0, 1*x + 1*z + -12.0] in MathOptInterface.Zeros(3)
+    cw: [w] in VecMathOptInterface.Zeros(1)
+    cy: [y] in VecMathOptInterface.Nonnegatives(1)
+    cz: [z] in VecMathOptInterface.Nonnegatives(1)
+    cex: [1*x + -1*w + 4.0, -1*y + 3.0, 1*x + 1*z + -12.0] in VecMathOptInterface.Zeros(3)
     minobjective: 3*x + -2*y + -4*z
     """
     model = MOI.Utilities.Model{Float64}()
@@ -120,10 +120,10 @@ function test_NonposToNonneg()
     )
     s = """
     variables: x, z, w, v
-    cv: [v] in MathOptInterface.Nonpositives(1)
-    cw: [w] in MathOptInterface.Zeros(1)
-    cz: [z] in MathOptInterface.Nonnegatives(1)
-    cex: [1*x + -1*w + 4.0, 1*v + 3.0, 1*x + 1*z + -12.0] in MathOptInterface.Zeros(3)
+    cv: [v] in VecMathOptInterface.Nonpositives(1)
+    cw: [w] in VecMathOptInterface.Zeros(1)
+    cz: [z] in VecMathOptInterface.Nonnegatives(1)
+    cex: [1*x + -1*w + 4.0, 1*v + 3.0, 1*x + 1*z + -12.0] in VecMathOptInterface.Zeros(3)
     minobjective: 3*x + 2*v + -4*z
     """
     model = MOI.Utilities.Model{Float64}()

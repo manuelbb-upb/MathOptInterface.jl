@@ -1,7 +1,7 @@
 """
     AbstractBridge
 
-Subtype of [`MathOptInterface.Bridges.AbstractBridge`](@ref) for constraint
+Subtype of [`VecMathOptInterface.Bridges.AbstractBridge`](@ref) for constraint
 bridges.
 """
 abstract type AbstractBridge <: MOIB.AbstractBridge end
@@ -110,14 +110,14 @@ function can only be called if `MOI.supports_constraint(BT, F, S)` is `true`.
 
 ## Examples
 
-As a [`MathOptInterface.VariableIndex`](@ref)-in-[`MathOptInterface.Interval`](@ref)
+As a [`VecMathOptInterface.VariableIndex`](@ref)-in-[`VecMathOptInterface.Interval`](@ref)
 constraint is bridged into a
-[`MathOptInterface.VariableIndex`](@ref)-in-[`MathOptInterface.GreaterThan`](@ref)
+[`VecMathOptInterface.VariableIndex`](@ref)-in-[`VecMathOptInterface.GreaterThan`](@ref)
 and a
-[`MathOptInterface.VariableIndex`](@ref)-in-[`MathOptInterface.LessThan`](@ref)
+[`VecMathOptInterface.VariableIndex`](@ref)-in-[`VecMathOptInterface.LessThan`](@ref)
 by the [`SplitIntervalBridge`](@ref):
 
-```jldoctest; setup=:(using MathOptInterface; const MOI = MathOptInterface)
+```jldoctest; setup=:(using VecMathOptInterface; const MOI = VecMathOptInterface)
 MOI.Bridges.Constraint.concrete_bridge_type(
     MOI.Bridges.Constraint.SplitIntervalBridge{Float64},
     MOI.VariableIndex,
@@ -126,7 +126,7 @@ MOI.Bridges.Constraint.concrete_bridge_type(
 
 # output
 
-MathOptInterface.Bridges.Constraint.SplitIntervalBridge{Float64, MathOptInterface.VariableIndex, MathOptInterface.Interval{Float64}, MathOptInterface.GreaterThan{Float64}, MathOptInterface.LessThan{Float64}}
+VecMathOptInterface.Bridges.Constraint.SplitIntervalBridge{Float64, VecMathOptInterface.VariableIndex, VecMathOptInterface.Interval{Float64}, VecMathOptInterface.GreaterThan{Float64}, VecMathOptInterface.LessThan{Float64}}
 ```
 """
 function concrete_bridge_type(

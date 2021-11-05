@@ -1,9 +1,9 @@
 module TestFileFormats
 
-using MathOptInterface
+using VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 function test_CBF()
     return include(joinpath(@__DIR__, "CBF", "CBF.jl"))

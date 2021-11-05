@@ -1,8 +1,8 @@
 module Benchmarks
 
-using BenchmarkTools, MathOptInterface
+using BenchmarkTools, VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const BENCHMARKS = Dict{String,Function}()
 
 """

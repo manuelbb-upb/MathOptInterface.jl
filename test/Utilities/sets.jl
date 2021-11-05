@@ -2,9 +2,9 @@ module TestSets
 
 using SparseArrays
 using Test
-using MathOptInterface
+using VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 function runtests()

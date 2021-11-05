@@ -2,10 +2,10 @@ module TestDoubleDicts
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
-const DoubleDicts = MathOptInterface.Utilities.DoubleDicts
+const DoubleDicts = VecMathOptInterface.Utilities.DoubleDicts
 
 function runtests()
     for name in names(@__MODULE__; all = true)

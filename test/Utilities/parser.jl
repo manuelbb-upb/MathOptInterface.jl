@@ -1,9 +1,9 @@
 module TestParser
 
-using MathOptInterface
+using VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 function runtests()

@@ -1,5 +1,5 @@
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 # Some tests are excluded because UniversalFallback accepts absolutely
 # everything.

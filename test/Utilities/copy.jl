@@ -2,11 +2,11 @@ module TestCopy
 
 using Test
 
-import MathOptInterface
-const MOI = MathOptInterface
+import VecMathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
-const DoubleDicts = MathOptInterface.Utilities.DoubleDicts
+const DoubleDicts = VecMathOptInterface.Utilities.DoubleDicts
 
 function runtests()
     for name in names(@__MODULE__; all = true)

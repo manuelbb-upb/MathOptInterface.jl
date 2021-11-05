@@ -2,8 +2,8 @@ module TestConstraintRelativeEntropyToExponential
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -87,8 +87,8 @@ function test_RelativeEntropy()
     s = """
     variables: u, y1, y2
     greater: u + -1.0y1 + -1.0y2 >= 0.0
-    exps1: [-1.0y1, 2.0, 1.0] in MathOptInterface.ExponentialCone()
-    exps2: [-1.0y2, 3.0, 5.0] in MathOptInterface.ExponentialCone()
+    exps1: [-1.0y1, 2.0, 1.0] in VecMathOptInterface.ExponentialCone()
+    exps2: [-1.0y2, 3.0, 5.0] in VecMathOptInterface.ExponentialCone()
     minobjective: u
     """
     model = MOI.Utilities.Model{Float64}()
@@ -111,7 +111,7 @@ function test_RelativeEntropy()
 
     s = """
     variables: u
-    relentr: [u, 1.0, 5.0, 2.0, 3.0] in MathOptInterface.RelativeEntropyCone(5)
+    relentr: [u, 1.0, 5.0, 2.0, 3.0] in VecMathOptInterface.RelativeEntropyCone(5)
     minobjective: u
     """
     model = MOI.Utilities.Model{Float64}()

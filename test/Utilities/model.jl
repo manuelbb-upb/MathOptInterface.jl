@@ -2,9 +2,9 @@ module TestModel
 
 using Test
 
-import MathOptInterface
+import VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -29,33 +29,33 @@ defined in a testset. If it runs without error, then we're okay.
 """
 module TestExternalModel
 
-using MathOptInterface
+using VecMathOptInterface
 
-struct NewSet <: MathOptInterface.AbstractScalarSet end
+struct NewSet <: VecMathOptInterface.AbstractScalarSet end
 
-struct NewFunction <: MathOptInterface.AbstractScalarFunction end
+struct NewFunction <: VecMathOptInterface.AbstractScalarFunction end
 
-MathOptInterface.Utilities.canonicalize!(f::NewFunction) = f
+VecMathOptInterface.Utilities.canonicalize!(f::NewFunction) = f
 
 Base.copy(::NewFunction) = NewFunction()
 
 Base.copy(::NewSet) = NewSet()
 
-MathOptInterface.Utilities.@model(
+VecMathOptInterface.Utilities.@model(
     ExternalModel,
-    (MathOptInterface.ZeroOne, NewSet),
+    (VecMathOptInterface.ZeroOne, NewSet),
     (),
     (),
     (),
     (NewFunction,),
-    (MathOptInterface.ScalarAffineFunction,),
+    (VecMathOptInterface.ScalarAffineFunction,),
     (),
     (),
 )
 
-MathOptInterface.Utilities.@model(
+VecMathOptInterface.Utilities.@model(
     ExternalOptimizer,
-    (MathOptInterface.ZeroOne, NewSet),
+    (VecMathOptInterface.ZeroOne, NewSet),
     (),
     (),
     (),

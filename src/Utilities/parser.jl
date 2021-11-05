@@ -259,7 +259,7 @@ A utility function to aid writing tests.
 ## WARNING
 
 This function is not intended for widespread use! It is mainly used as a tool to
-simplify writing tests in MathOptInterface. Do not use it as an exchange format
+simplify writing tests in VecMathOptInterface. Do not use it as an exchange format
 for storing or transmitting problem instances. Use the FileFormats submodule
 instead.
 

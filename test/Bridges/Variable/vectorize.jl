@@ -2,8 +2,8 @@ module TestVariableVectorize
 
 using Test
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)
@@ -56,7 +56,7 @@ function test_get_scalar_constraint()
         )
         s = """
         variables: y
-        cy: [y] in MathOptInterface.Nonnegatives(1)
+        cy: [y] in VecMathOptInterface.Nonnegatives(1)
         c: 2.0y >= 3.0
         """
         model = MOI.Utilities.Model{Float64}()
@@ -124,8 +124,8 @@ function test_exp3_with_add_constrained_variable_y()
           [-1.0, log(5) - 1, 1 / 5]
 
     err = ErrorException(
-        "Cannot add two `VariableIndex`-in-`MathOptInterface.LessThan{Float64}`" *
-        " on the same variable MathOptInterface.VariableIndex(-1).",
+        "Cannot add two `VariableIndex`-in-`VecMathOptInterface.LessThan{Float64}`" *
+        " on the same variable VecMathOptInterface.VariableIndex(-1).",
     )
     @test_throws err MOI.add_constraint(bridged_mock, y, MOI.LessThan(4.0))
 
@@ -139,8 +139,8 @@ function test_exp3_with_add_constrained_variable_y()
     @test length(cis) == 1
 
     err = ArgumentError(
-        "Variable bridge of type `$(MathOptInterface.Bridges.Variable.VectorizeBridge{Float64,MathOptInterface.Nonpositives})`" *
-        " does not support accessing the attribute `MathOptInterface.Test.UnknownVariableAttribute()`.",
+        "Variable bridge of type `$(VecMathOptInterface.Bridges.Variable.VectorizeBridge{Float64,VecMathOptInterface.Nonpositives})`" *
+        " does not support accessing the attribute `VecMathOptInterface.Test.UnknownVariableAttribute()`.",
     )
     @test_throws err MOI.get(
         bridged_mock,
@@ -151,7 +151,7 @@ function test_exp3_with_add_constrained_variable_y()
     attr = MOI.ConstraintSet()
     err = MOI.SetAttributeNotAllowed(
         attr,
-        "The variable `MathOptInterface.VariableIndex(12345676)` is bridged by the `VectorizeBridge`.",
+        "The variable `VecMathOptInterface.VariableIndex(12345676)` is bridged by the `VectorizeBridge`.",
     )
     @test_throws err MOI.set(bridged_mock, attr, ci, MOI.LessThan(4.0))
 
@@ -165,7 +165,7 @@ function test_exp3_with_add_constrained_variable_y()
     change = MOI.ScalarCoefficientChange(y, 0.0)
     attr = MOI.ObjectiveFunction{MOI.ScalarAffineFunction{Float64}}()
     message =
-        "The change MathOptInterface.ScalarCoefficientChange{Float64}(MathOptInterface.VariableIndex(-1), 0.0)" *
+        "The change VecMathOptInterface.ScalarCoefficientChange{Float64}(VecMathOptInterface.VariableIndex(-1), 0.0)" *
         " contains variables bridged into a function with nonzero constant."
     err = MOI.ModifyObjectiveNotAllowed(change, message)
     @test_throws err MOI.modify(bridged_mock, attr, change)
@@ -190,9 +190,9 @@ function test_exp3_with_add_constrained_variable_y()
     )
     s = """
     variables: x, z
-    zc: [z] in MathOptInterface.Nonpositives(1)
+    zc: [z] in VecMathOptInterface.Nonpositives(1)
     xc: 2.0x <= 4.0
-    ec: [x, 1.0, z + 5.0] in MathOptInterface.ExponentialCone()
+    ec: [x, 1.0, z + 5.0] in VecMathOptInterface.ExponentialCone()
     """
     model = MOI.Utilities.Model{Float64}()
     MOI.Utilities.loadfromstring!(model, s)
@@ -203,7 +203,7 @@ function test_exp3_with_add_constrained_variable_y()
     variables: x, y
     y <= 5.0
     xc: 2.0x <= 4.0
-    ec: [x, 1.0, y] in MathOptInterface.ExponentialCone()
+    ec: [x, 1.0, y] in VecMathOptInterface.ExponentialCone()
     """
     model = MOI.Utilities.Model{Float64}()
     MOI.Utilities.loadfromstring!(model, s)

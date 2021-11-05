@@ -1,8 +1,8 @@
 module TestSets
 
 using Test
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 include("dummy.jl")
 
@@ -268,7 +268,7 @@ end
 function test_sets_dual_psdsquare()
     s = MOI.PositiveSemidefiniteConeSquare(4)
     err = ErrorException(
-        """Dual of `PositiveSemidefiniteConeSquare` is not defined in MathOptInterface.
+        """Dual of `PositiveSemidefiniteConeSquare` is not defined in VecMathOptInterface.
             For more details see the comments in `src/Bridges/Constraint/square.jl`.""",
     )
     @test_throws err MOI.dual_set(MOI.PositiveSemidefiniteConeSquare(4))

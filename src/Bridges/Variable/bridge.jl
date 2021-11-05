@@ -1,7 +1,7 @@
 """
     AbstractBridge
 
-Subtype of [`MathOptInterface.Bridges.AbstractBridge`](@ref) for variable
+Subtype of [`VecMathOptInterface.Bridges.AbstractBridge`](@ref) for variable
 bridges.
 """
 abstract type AbstractBridge <: MOIB.AbstractBridge end
@@ -138,11 +138,11 @@ so bridges should not implement this.
 
 ## Examples
 
-As a variable in [`MathOptInterface.GreaterThan`](@ref) is bridged into
-variables in [`MathOptInterface.Nonnegatives`](@ref) by the
+As a variable in [`VecMathOptInterface.GreaterThan`](@ref) is bridged into
+variables in [`VecMathOptInterface.Nonnegatives`](@ref) by the
 [`VectorizeBridge`](@ref):
 
-```jldoctest; setup=:(using MathOptInterface; const MOI = MathOptInterface)
+```jldoctest; setup=:(using VecMathOptInterface; const MOI = VecMathOptInterface)
 MOI.Bridges.added_constrained_variable_types(
     MOI.Bridges.Variable.VectorizeBridge{Float64},
     MOI.GreaterThan{Float64},
@@ -151,7 +151,7 @@ MOI.Bridges.added_constrained_variable_types(
 # output
 
 1-element Vector{Tuple{Type}}:
- (MathOptInterface.Nonnegatives,)
+ (VecMathOptInterface.Nonnegatives,)
 ```
 """
 function MOIB.added_constrained_variable_types(
@@ -175,13 +175,13 @@ so bridges should not implement this method.
 ## Examples
 
 In addition to creating variables in
-[`MathOptInterface.PositiveSemidefiniteConeTriangle`](@ref), the
+[`VecMathOptInterface.PositiveSemidefiniteConeTriangle`](@ref), the
 [`RSOCtoPSDBridge`](@ref) also creates
-[`MathOptInterface.VariableIndex`](@ref)-in-[`MathOptInterface.EqualTo`](@ref) and
-[`MathOptInterface.ScalarAffineFunction`](@ref)-in-[`MathOptInterface.EqualTo`](@ref)
+[`VecMathOptInterface.VariableIndex`](@ref)-in-[`VecMathOptInterface.EqualTo`](@ref) and
+[`VecMathOptInterface.ScalarAffineFunction`](@ref)-in-[`VecMathOptInterface.EqualTo`](@ref)
 constraints:
 
-```jldoctest; setup=:(using MathOptInterface; const MOI = MathOptInterface)
+```jldoctest; setup=:(using VecMathOptInterface; const MOI = VecMathOptInterface)
 MOI.Bridges.added_constraint_types(
     MOI.Bridges.Variable.RSOCtoPSDBridge{Float64},
     MOI.RotatedSecondOrderCone,
@@ -190,8 +190,8 @@ MOI.Bridges.added_constraint_types(
 # output
 
 2-element Vector{Tuple{Type, Type}}:
- (MathOptInterface.VariableIndex, MathOptInterface.EqualTo{Float64})
- (MathOptInterface.ScalarAffineFunction{Float64}, MathOptInterface.EqualTo{Float64})
+ (VecMathOptInterface.VariableIndex, VecMathOptInterface.EqualTo{Float64})
+ (VecMathOptInterface.ScalarAffineFunction{Float64}, VecMathOptInterface.EqualTo{Float64})
 ```
 """
 function MOIB.added_constraint_types(
@@ -213,11 +213,11 @@ is `true`.
 
 ## Examples
 
-As a variable in [`MathOptInterface.GreaterThan`](@ref) is bridged into
-variables in [`MathOptInterface.Nonnegatives`](@ref) by the
+As a variable in [`VecMathOptInterface.GreaterThan`](@ref) is bridged into
+variables in [`VecMathOptInterface.Nonnegatives`](@ref) by the
 [`VectorizeBridge`](@ref):
 
-```jldoctest; setup=:(using MathOptInterface; const MOI = MathOptInterface)
+```jldoctest; setup=:(using VecMathOptInterface; const MOI = VecMathOptInterface)
 MOI.Bridges.Variable.concrete_bridge_type(
     MOI.Bridges.Variable.VectorizeBridge{Float64},
     MOI.GreaterThan{Float64},
@@ -225,7 +225,7 @@ MOI.Bridges.Variable.concrete_bridge_type(
 
 # output
 
-MathOptInterface.Bridges.Variable.VectorizeBridge{Float64, MathOptInterface.Nonnegatives}
+VecMathOptInterface.Bridges.Variable.VectorizeBridge{Float64, VecMathOptInterface.Nonnegatives}
 ```
 """
 function concrete_bridge_type(bridge_type::Type, ::Type{<:MOI.AbstractSet})

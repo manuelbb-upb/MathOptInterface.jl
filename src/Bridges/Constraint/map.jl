@@ -206,7 +206,7 @@ end
 """
     variable_constraints(map::Map, vi::MOI.VariableIndex)
 
-Return the list of all keys corresponding to [`MathOptInterface.VariableIndex`](@ref)
+Return the list of all keys corresponding to [`VecMathOptInterface.VariableIndex`](@ref)
 constraints on the variable `vi`.
 """
 function variable_constraints(map::Map, vi::MOI.VariableIndex)
@@ -223,7 +223,7 @@ end
     vector_of_variables_constraints(map::Map)
 
 Return the list of all keys that correspond to
-[`MathOptInterface.VectorOfVariables`](@ref) constraints.
+[`VecMathOptInterface.VectorOfVariables`](@ref) constraints.
 """
 function vector_of_variables_constraints(map::Map)
     return MOIU.LazyMap{MOI.ConstraintIndex{MOI.VectorOfVariables}}(
@@ -243,7 +243,7 @@ end
 Return a `Bool` indicating whether any bridge was added yet. Note that it
 returns `false` even if all bridges were deleted while `isempty` would return
 `true`. It is computed in `O(1)` while `isempty` needs `O(n)` hence it is used
-by [`MathOptInterface.Bridges.AbstractBridgeOptimizer`](@ref) to shortcut
+by [`VecMathOptInterface.Bridges.AbstractBridgeOptimizer`](@ref) to shortcut
 operations in case variable bridges are not used.
 """
 function has_bridges(map::Map)
@@ -283,7 +283,7 @@ end
     EmptyMap <: AbstractDict{MOI.ConstraintIndex, AbstractBridge}
 
 Empty version of [`Map`](@ref). It is used by
-[`MathOptInterface.Bridges.Variable.SingleBridgeOptimizer`](@ref) as it does
+[`VecMathOptInterface.Bridges.Variable.SingleBridgeOptimizer`](@ref) as it does
 not bridge any constraint.
 """
 struct EmptyMap <: AbstractDict{MOI.VariableIndex,AbstractBridge} end

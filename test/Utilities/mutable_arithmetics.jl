@@ -5,8 +5,8 @@ using Test
 import MutableArithmetics
 const MA = MutableArithmetics
 
-using MathOptInterface
-const MOI = MathOptInterface
+using VecMathOptInterface
+const MOI = VecMathOptInterface
 
 function runtests()
     for name in names(@__MODULE__; all = true)

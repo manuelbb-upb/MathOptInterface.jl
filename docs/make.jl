@@ -1,5 +1,5 @@
 import Documenter
-import MathOptInterface
+import VecMathOptInterface
 
 # Pass --fix` to rebuild the doctests.
 const _FIX = findfirst(isequal("--fix"), ARGS) !== nothing
@@ -78,7 +78,7 @@ const _PAGES = [
 # ==============================================================================
 
 @time Documenter.makedocs(
-    sitename = "MathOptInterface",
+    sitename = "VecMathOptInterface",
     authors = "The JuMP core developers and contributors",
     format = Documenter.HTML(
         # See https://github.com/JuliaDocs/Documenter.jl/issues/868
@@ -87,7 +87,7 @@ const _PAGES = [
         collapselevel = 1,
     ),
     strict = true,
-    modules = [MathOptInterface],
+    modules = [VecMathOptInterface],
     checkdocs = :exports,
     doctest = _FIX ? :fix : true,
     pages = _PAGES,
@@ -100,7 +100,7 @@ const _PAGES = [
 if _PDF
     latex_platform = _IS_GITHUB_ACTIONS ? "docker" : "native"
     @time Documenter.makedocs(
-        sitename = "MathOptInterface",
+        sitename = "VecMathOptInterface",
         authors = "The JuMP core developers and contributors",
         format = Documenter.LaTeX(platform = latex_platform),
         build = "latex_build",
@@ -110,8 +110,8 @@ if _PDF
     # directory! We don't want to copy everything in `latex_build` because it
     # includes lots of extraneous LaTeX files.
     cp(
-        joinpath(@__DIR__, "latex_build", "MathOptInterface.pdf"),
-        joinpath(@__DIR__, "build", "MathOptInterface.pdf"),
+        joinpath(@__DIR__, "latex_build", "VecMathOptInterface.pdf"),
+        joinpath(@__DIR__, "build", "VecMathOptInterface.pdf"),
     )
 end
 
@@ -120,6 +120,6 @@ end
 # ==============================================================================
 
 Documenter.deploydocs(
-    repo = "github.com/jump-dev/MathOptInterface.jl.git",
+    repo = "github.com/manuelbb-upb/VecMathOptInterface.jl.git",
     push_preview = true,
 )

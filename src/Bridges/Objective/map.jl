@@ -83,8 +83,8 @@ end
     EmptyMap <: AbstractDict{MOI.ObjectiveFunction, AbstractBridge}
 
 Empty version of [`Map`](@ref). It is used by
-[`MathOptInterface.Bridges.Variable.SingleBridgeOptimizer`](@ref) and
-[`MathOptInterface.Bridges.Constraint.SingleBridgeOptimizer`](@ref) as they do
+[`VecMathOptInterface.Bridges.Variable.SingleBridgeOptimizer`](@ref) and
+[`VecMathOptInterface.Bridges.Constraint.SingleBridgeOptimizer`](@ref) as they do
 not bridge any objective function.
 """
 struct EmptyMap <: AbstractDict{MOI.ObjectiveFunction,AbstractBridge} end

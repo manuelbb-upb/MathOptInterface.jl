@@ -36,7 +36,7 @@ it transforms the constraint ``l ≤ ⟨a, x⟩ + α ≤ u`` into the constraint
     If `T<:AbstractFloat` and `S` is `MOI.Interval{T}` then no lower (resp.
     upper) bound constraint is created if the lower (resp. upper) bound is
     `typemin(T)` (resp. `typemax(T)`). Similarly, when
-    [`MathOptInterface.ConstraintSet`](@ref) is set, a lower or upper bound
+    [`VecMathOptInterface.ConstraintSet`](@ref) is set, a lower or upper bound
     constraint may be deleted or created accordingly.
 """
 mutable struct SplitIntervalBridge{

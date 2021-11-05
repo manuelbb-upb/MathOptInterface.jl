@@ -1,9 +1,9 @@
 module TestCBF
 
-import MathOptInterface
+import VecMathOptInterface
 using Test
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 const CBF = MOI.FileFormats.CBF
 const CBF_TEST_FILE = "test.cbf"

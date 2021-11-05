@@ -3,7 +3,7 @@
     AbstractBridgeOptimizer
 
 The `SingleBridgeOptimizer` bridges any constrained variables supported by the
-bridge `BT`. This is in contrast with the [`MathOptInterface.Bridges.LazyBridgeOptimizer`](@ref)
+bridge `BT`. This is in contrast with the [`VecMathOptInterface.Bridges.LazyBridgeOptimizer`](@ref)
 which only bridges the constrained variables that are unsupported by the
 internal model, even if they are supported by one of its bridges.
 

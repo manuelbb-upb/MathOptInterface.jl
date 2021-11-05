@@ -2,9 +2,9 @@ module TestCachingOptimizer
 
 using Test
 
-import MathOptInterface
+import VecMathOptInterface
 
-const MOI = MathOptInterface
+const MOI = VecMathOptInterface
 const MOIU = MOI.Utilities
 
 function runtests()
