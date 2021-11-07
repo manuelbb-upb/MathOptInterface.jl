@@ -51,6 +51,20 @@ struct ConstraintIndex{F,S}
     value::Int64
 end
 
+"""
+    ObjectiveIndex{F,S}
+
+A type-safe wrapper ofr `Int64` for use in referencing objective functions of 
+type `F` in a model (with optimization sense `S`).
+"""
+struct ObjectiveIndex{ F, S }
+	value :: Int64
+end
+# TODO: should `ObjectiveIndex` be a subtype of MOI.AbstractFunction`?
+# this would allow for constraints involving the objectives, i.e.
+# min_x f, subject to f(x) ≤ 0 ?
+
+
 # The default hash is slow. It's important for the performance of dictionaries
 # of VariableIndices to define our own.
 # https://github.com/JuliaLang/julia/issues/10208
