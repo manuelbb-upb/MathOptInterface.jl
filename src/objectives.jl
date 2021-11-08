@@ -27,7 +27,7 @@ function supports_single_objective(
 	::Type{S} ) where{F<:AbstractFunction, S<:OptimSense}
 	return(
 		supports(model, ObjectiveFunction{F}()) && 
-		supports(model, ObjectiveSense(), _optimization_sense(S))
+		supports(model, ObjectiveSense()) #, _optimization_sense(S))
 	)
 end
 
@@ -85,8 +85,8 @@ function add_objective(
 
 	if !(is_multi_model(model)) 
 		if supports_single_objective(model, F, S)
-			set(model, ObjectiveFunction(), func )
-			set(model, ObjectiveSense(), sense)
+			set(model, ObjectiveSense(), _optimization_sense(sense) )
+			set(model, ObjectiveFunction{F}(), func )
 		end
 		return GoalIndex{F,S}(-1)
 	end		
@@ -122,7 +122,7 @@ function add_objectives end
 
 # default fallback
 function add_objectives(model::ModelLike, funcs, senses)
-    return add_objective.(model, funcs, sets)
+    return add_objective.(model, funcs, senses)
 end
  
 # default fallback

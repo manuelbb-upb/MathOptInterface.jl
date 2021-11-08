@@ -992,7 +992,7 @@ attribute_value_type( ::SupportsMultipleGoals ) = Bool
 get_fallback(model :: ModelLike, attr :: SupportsMultipleGoals) = false
 
 function is_multi_model( model :: ModelLike )
-    return get( model, SupportsMutlipleGoals() )
+    return get( model, SupportsMultipleGoals() )
 end
 
 # ATM `MaxOutputs` is used to check whether the new (multi-objective)
@@ -1010,9 +1010,9 @@ struct FeasibilitySense <: OptimSense end
 
 # conversion functions
 function _optim_sense_type( s :: OptimizationSense )
-    s == MIN_SENSE && return MinSense()
-    s == MAX_SENSE && return MaxSense()
-    s == FEASIBILITY_SENSE && return FeasibilitySense()
+    s == MIN_SENSE && return MinSense
+    s == MAX_SENSE && return MaxSense
+    s == FEASIBILITY_SENSE && return FeasibilitySense
 end
 
 _optim_sense( s :: OptimizationSense ) = _optim_sense_type(s)()
@@ -1020,7 +1020,7 @@ _optim_sense( s :: OptimizationSense ) = _optim_sense_type(s)()
 _optimization_sense( S :: Type{MinSense} ) = MIN_SENSE
 _optimization_sense( S :: Type{MaxSense} ) = MAX_SENSE
 _optimization_sense( S :: Type{FeasibilitySense} ) = FEASIBILITY_SENSE
-_optimization_sense( s :: S) where S<:OptimizationSense = _optimization_sense(S)
+_optimization_sense( s :: S) where S<:OptimSense = _optimization_sense(S)
 
 """
     ObjectiveSense()
