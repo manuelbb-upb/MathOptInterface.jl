@@ -221,6 +221,7 @@ include("constraints.jl")
 include("modifications.jl")
 include("variables.jl")
 include("nlp.jl")
+include("objectives.jl")
 
 if VERSION > v"1.4.2"
     include("precompile.jl")

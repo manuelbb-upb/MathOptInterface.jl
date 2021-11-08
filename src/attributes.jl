@@ -35,11 +35,11 @@ Abstract supertype for attribute objects that can be used to set or get attribut
 abstract type AbstractConstraintAttribute end
 
 """
-    AbstractObjectiveAttribute
+    AbstractGoalAttribute
 
 Abstract supertype for attribute objects that can be used to set or get attributes (properties) of objectives in the model.
 """
-abstract type AbstractObjectiveAttribute end
+abstract type AbstractGoalAttribute end
 
 # Attributes should not contain any `VariableIndex` or `ConstraintIndex` as the
 # set is passed unmodifed during `copy_to`.
@@ -48,7 +48,7 @@ const AnyAttribute = Union{
     AbstractModelAttribute,
     AbstractVariableAttribute,
     AbstractConstraintAttribute,
-    AbstractObjectiveAttribute
+    AbstractGoalAttribute
 }
 
 # This allows to use attributes in broadcast calls without the need to
@@ -317,13 +317,14 @@ Errors if two constraints have the same name.
 ### Examples
 
 ```julia
-get(model, ObjectiveValue())
+#get(model, ObjectiveValue())
 get(model, VariablePrimal(), ref)
 get(model, VariablePrimal(5), [ref1, ref2])
 get(model, OtherAttribute("something specific to cplex"))
 get(model, VariableIndex, "var1")
 get(model, ConstraintIndex{ScalarAffineFunction{Float64},LessThan{Float64}}, "con1")
 get(model, ConstraintIndex, "con1")
+get(model, ObjectivePrimal(), ref_objf)
 ```
 """
 function get end
@@ -353,6 +354,18 @@ function get_fallback(
     model::ModelLike,
     attr::AbstractVariableAttribute,
     ::VariableIndex,
+)
+    return throw(
+        ArgumentError(
+            "$(typeof(model)) does not support getting the attribute $(attr).",
+        ),
+    )
+end
+
+function get_fallback(
+    model::ModelLike,
+    attr::AbstractGoalAttribute,
+    ::GoalIndex,
 )
     return throw(
         ArgumentError(
@@ -955,13 +968,21 @@ attribute_value_type(::Name) = String
 
 
 """
-	MaxOutputs()
+	SupportsMultipleGoals()
 
-An attribute a solver should use the specify the maximum number of scalar-valued 
-outputs it can handle in multiobjective optimization.
+An attribute a model should use indicate that it is a multi-objective optimization
+problem or solver.
 """
-struct MaxOutputs <: MOI.AbstractOptimizerAttribute end	
-MOI.attribute_value_type( ::MaxOutputs ) = Int64
+struct SupportsMultipleGoals <: MOI.AbstractModelAttribute end	
+MOI.attribute_value_type( ::SupportsMultipleGoals ) = Bool
+
+# NOTE: I define a default here so that I can use `get(model, SupportsMultipleGoals())`
+# to check whether a multi-objective interface is implemented.
+get_fallback(model :: ModelLike, attr :: SupportsMultipleGoals) = false
+
+function is_multi_model( model :: ModelLike )
+    return get( model, SupportsMutlipleGoals() )
+end
 
 # ATM `MaxOutputs` is used to check whether the new (multi-objective)
 # interface is implemented or the "old" attributes are used
@@ -976,11 +997,19 @@ struct MinSense <: OptimSense end
 struct MaxSense <: OptimSense end 
 struct FeasibilitySense <: OptimSense end
 
-function _optimization_sense( s :: OptimizationSense )
+# conversion functions
+function _optim_sense_type( s :: OptimizationSense )
     s == MIN_SENSE && return MinSense()
     s == MAX_SENSE && return MaxSense()
     s == FEASIBILITY_SENSE && return FeasibilitySense()
 end
+
+_optim_sense( s :: OptimizationSense ) = _optim_sense_type(s)()
+
+_optimization_sense( S :: Type{MinSense} ) = MIN_SENSE
+_optimization_sense( S :: Type{MaxSense} ) = MAX_SENSE
+_optimization_sense( S :: Type{FeasibilitySense} ) = FEASIBILITY_SENSE
+_optimization_sense( s :: S) where S<:OptimizationSense = _optimization_sense(S)
 
 """
     ObjectiveSense()
@@ -1040,38 +1069,38 @@ struct ListOfConstraintTypesPresent <: AbstractModelAttribute end
 @deprecate ListOfConstraints ListOfConstraintTypesPresent
 
 """
-    ListOfObjectiveIndices{F,S}()
+    ListOfGoalIndices{F,S}()
 
-A model attribute for the `Vector{ObjectiveIndex{F,S}}` of all objective indices of type
+A model attribute for the `Vector{GoalIndex{F,S}}` of all objective indices of type
 `F`-`S` in the model (i.e., of length equal to the value of
-`NumberOfObjectives{F,S}()`) in the order in which they were added.
+`NumberOfGoals{F,S}()`) in the order in which they were added.
 """
-struct ListOfObjectiveIndices{F,S} <: AbstractModelAttribute end
+struct ListOfGoalIndices{F,S} <: AbstractModelAttribute end
 
 """
-    NumberOfObjectives{F,S}()
+    NumberOfGoals{F,S}()
 
 A model attribute for the number of objectives of the type `F`-`S` present in the model.
 """
-struct NumberOfObjectives{F,S} <: AbstractModelAttribute end
+struct NumberOfGoals{F,S} <: AbstractModelAttribute end
 
-attribute_value_type(::NumberOfObjectives) = Int64
+attribute_value_type(::NumberOfGoals) = Int64
 
 """
-    ListOfObjectiveTypesPresent()
+    ListOfGoalTypesPresent()
 
 A model attribute for the list of tuples of the form `(F,S)`, where `F` is a function type
-and `S` is a `OptimSense` type indicating that the attribute `NumberOfObjectives{F,S}()`
+and `S` is a `OptimSense` type indicating that the attribute `NumberOfGoals{F,S}()`
 has value greater than zero.
 """
-struct ListOfObjectiveTypesPresent <: AbstractModelAttribute end
+struct ListOfGoalTypesPresent <: AbstractModelAttribute end
 
 # NOTE / TODO
 # the blow `AbstractModelAttribute`s should be deprecated in favor of 
 # the (more general) multi objective interface.
 # `ObjectiveFunction` will not be used anymore and things like 
-# `ObjectiveFunctionType` should rather subtype `AbstractObjectiveAttribute`.
-# For now, I leave these attributes as is and define new ones like `ObjFunctionType` etc.
+# `ObjectiveFunctionType` should rather subtype `AbstractGoalAttribute`.
+# For now, I leave these attributes as is and define new ones like `GoalFunctionType` etc.
 
 """
     ObjectiveFunction{F<:AbstractScalarFunction}()
@@ -1403,24 +1432,39 @@ end
 
 attribute_value_type(::VariableBasisStatus) = BasisStatusCode
 
-## Objective attributes
+## Goal (Objective) attributes
+
+# Note: For most of these attributes I define fallback `get`tters 
+# that check if the "old" single objective interface is used and 
+# get the corresponding attributes.
+
+function throw_get_attr_error(
+    model::ModelLike,
+    attr
+)
+    return throw(
+        ArgumentError(
+            "$(typeof(model)) does not support getting the attribute $(attr).",
+        ),
+    )
+end
 
 """
-    ListOfObjectiveAttributesSet{F, S}()
+    ListOfGoalAttributesSet{F, S}()
 
-A model attribute for the `Vector{AbstractObjectiveAttribute}` of all
+A model attribute for the `Vector{AbstractGoalAttribute}` of all
 objective attributes `attr` such that 1) `is_copyable(attr)` returns `true` and
 2) the attribute was set to `F`-`S` objective(s).
 
 ## Note
 
-The attributes [`ObjFunction`](@ref) and [`ObjSense`](@ref) should
+The attributes [`GoalFunction`](@ref) and [`GoalSense`](@ref) should
 not be included in the list even if then have been set with [`set`](@ref).
 """
-struct ListOfObjectiveAttributesSet{F,S} <: AbstractModelAttribute end
+struct ListOfGoalAttributesSet{F,S} <: AbstractModelAttribute end
 
 """
-    ObjectiveName()
+    GoalName()
 
 An objective attribute for a string identifying the objective name.
 
@@ -1428,66 +1472,71 @@ It is *valid* for objectives to have the same name; however,
 objectives with duplicate names cannot be looked up using [`get`](@ref),
 regardless of whether they have the same `F`-`S` type.
 
-`ObjectiveName` has a default value of `""` if not set.
+`GoalName` has a default value of `""` if not set.
 
 ## Notes
 
-You should _not_ implement `ObjectiveName` for `VariableIndex` objectives.
+You should _not_ implement `GoalName` for `VariableIndex` objectives.
 """
-struct ObjectiveName <: AbstractObjectiveAttribute end
+struct GoalName <: AbstractGoalAttribute end
 
-attribute_value_type(::ObjectiveName) = String
+attribute_value_type(::GoalName) = String
+
+function get_fallback(model :: ModelLike, attr :: GoalName, ::GoalIndex)
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    return ""
+end
 
 """
-    VariableIndexObjectiveNameError()
+    VariableIndexGoalNameError()
 
-An error to be thrown when the user tries to set `ObjectiveName` on a
+An error to be thrown when the user tries to set `GoalName` on a
 `VariableIndex` objective.
 """
-function VariableIndexObjectiveNameError()
+function VariableIndexGoalNameError()
     return UnsupportedAttribute(
-        ObjectiveName(),
-        "`ObjectiveName`s are not supported for `VariableIndex` objectives.",
+        GoalName(),
+        "`GoalName`s are not supported for `VariableIndex` objectives.",
     )
 end
 
 function supports_fallback(
     ::ModelLike,
-    ::ObjectiveName,
-    ::Type{ObjectiveIndex{VariableIndex,S}},
+    ::GoalName,
+    ::Type{GoalIndex{VariableIndex,S}},
 ) where {S}
-    return throw(VariableIndexObjectiveNameError())
+    return throw(VariableIndexGoalNameError())
 end
 
 """
-    ObjectivePrimalStart()
+    GoalPrimalStart()
 
 A objective attribute for the initial assignment to some objective's
-[`ObjectivePrimal`](@ref) that the optimizer may use to warm-start the solve.
+[`GoalPrimal`](@ref) that the optimizer may use to warm-start the solve.
 
 May be `nothing` (unset), a number for [`AbstractScalarFunction`](@ref), or a
 vector for [`AbstractVectorFunction`](@ref).
 """
-struct ObjectivePrimalStart <: AbstractObjectiveAttribute end
+struct GoalPrimalStart <: AbstractGoalAttribute end
 
 """
-    ObjectiveDualStart()
+    GoalDualStart()
 
 A objective attribute for the initial assignment to some objective's
-[`ObjectiveDual`](@ref) that the optimizer may use to warm-start the solve.
+[`GoalDual`](@ref) that the optimizer may use to warm-start the solve.
 
 May be `nothing` (unset), a number for [`AbstractScalarFunction`](@ref), or a
 vector for [`AbstractVectorFunction`](@ref).
 """
-struct ObjectiveDualStart <: AbstractObjectiveAttribute end
+struct GoalDualStart <: AbstractGoalAttribute end
 
 """
-    ObjectivePrimal(result_index::Int = 1)
+    GoalPrimal(result_index::Int = 1)
 
 A objective attribute for the assignment to some objective's primal value(s)
 in result `result_index`.
 
-If the objective is `f(x)`, then in most cases the `ObjectivePrimal` is
+If the objective is `f(x)`, then in most cases the `GoalPrimal` is
 the value of `f`, evaluated at the correspondng [`VariablePrimal`](@ref)
 solution.
 
@@ -1497,18 +1546,24 @@ the [`ResultCount`](@ref) attribute), getting this attribute must throw a
 [`ResultIndexBoundsError`](@ref). Otherwise, if the result is unavailable for
 another reason (for instance, only a dual solution is available), the result is
 undefined. Users should first check [`PrimalStatus`](@ref) before accessing the
-`ObjectivePrimal` attribute.
+`GoalPrimal` attribute.
 
 If `result_index` is omitted, it is 1 by default. See [`ResultCount`](@ref) for
 information on how the results are ordered.
 """
-struct ObjectivePrimal <: AbstractObjectiveAttribute
+struct GoalPrimal <: AbstractGoalAttribute
     result_index::Int
-    ObjectivePrimal(result_index::Int = 1) = new(result_index)
+    GoalPrimal(result_index::Int = 1) = new(result_index)
 end
-# `ObjectivePrimal` replaces `ObjectiveValue`
+# `GoalPrimal` replaces `ObjectiveValue`
+function get_fallback(model :: ModelLike, attr::GoalPrimal, ::GoalIndex)
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = ObjectiveValue( attr.result_index )
+    return get(model, old_attr)
+end
+
 """
-    ObjectiveDual(result_index::Int = 1)
+    GoalDual(result_index::Int = 1)
 
 A objective attribute for the assignment to some objective's dual value(s) in
 result `result_index`. If `result_index` is omitted, it is 1 by default.
@@ -1519,26 +1574,31 @@ the [`ResultCount`](@ref) attribute), getting this attribute must throw a
 [`ResultIndexBoundsError`](@ref). Otherwise, if the result is unavailable for
 another reason (for instance, only a primal solution is available), the result is
 undefined. Users should first check [`DualStatus`](@ref) before accessing the
-`ObjectiveDual` attribute.
+`GoalDual` attribute.
 
 See [`ResultCount`](@ref) for information on how the results are ordered.
 """
-struct ObjectiveDual <: AbstractObjectiveAttribute
+struct GoalDual <: AbstractGoalAttribute
     result_index::Int
-    ObjectiveDual(result_index::Int = 1) = new(result_index)
+    GoalDual(result_index::Int = 1) = new(result_index)
 end
-# `ObjectiveDual` replaces `DualObjectiveValue`
+# `GoalDual` replaces `DualObjectiveValue`
+function get_fallback(model :: ModelLike, attr::GoalDual, ::GoalIndex)
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = DualObjectiveValue( attr.result_index )
+    return get(model, old_attr)
+end
 
 """
-    CanonicalObjectiveFunction()
+    CanonicalGoalFunction()
 
 A objective attribute for a canonical representation of the
 [`AbstractFunction`](@ref) object used to define the objective.
 Getting this attribute is guaranteed to return a function that is equivalent but
 not necessarily identical to the function provided by the user.
 
-By default, `MOI.get(model, MOI.CanonicalObjectiveFunction(), oi)` fallbacks to
-`MOI.Utilities.canonical(MOI.get(model, MOI.ObjectiveFunction(), oi))`.
+By default, `MOI.get(model, MOI.CanonicalGoalFunction(), oi)` fallbacks to
+`MOI.Utilities.canonical(MOI.get(model, MOI.GoalFunction(), oi))`.
 However, if `model` knows that the objective function is canonical then it can
 implement a specialized method that directly return the function without calling
 [`Utilities.canonical`](@ref). Therefore, the value returned **cannot** be
@@ -1547,16 +1607,16 @@ Moreover, [`Utilities.Model`](@ref) checks with [`Utilities.is_canonical`](@ref)
 whether the function stored internally is already canonical and if it's the case,
 then it returns the function stored internally instead of a copy.
 """
-struct CanonicalObjectiveFunction <: AbstractObjectiveAttribute end
+struct CanonicalGoalFunction <: AbstractGoalAttribute end
 
-attribute_value_type(::CanonicalObjectiveFunction) = AbstractFunction
+attribute_value_type(::CanonicalGoalFunction) = AbstractFunction
 
 function get_fallback(
     model::ModelLike,
-    ::CanonicalObjectiveFunction,
-    ci::ObjectiveIndex,
+    ::CanonicalGoalFunction,
+    ci::GoalIndex,
 )
-    func = get(model, ObjectiveFunction(), ci)
+    func = get(model, GoalFunction(), ci)
     # In `Utilities.AbstractModel` and `Utilities.UniversalFallback`,
     # the function is canonicalized in `add_constraint` so it might already
     # be canonical. In other models, the constraint might have been copied from
@@ -1572,60 +1632,88 @@ function get_fallback(
 end
 
 """
-    ObjFunction()
+    GoalFunctionType()
+
+A model attribute for the type `F` of the objective function set via
+`add_objective`.
+"""
+struct GoalFunctionType <: AbstractGoalAttribute end
+
+attribute_value_type(::GoalFunctionType) = Type{<:AbstractFunction}
+
+function get_fallback(model :: ModelLike, attr::GoalFunctionType, ::GoalIndex )
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = ObjectiveFunctionType()
+    return get(model, old_attr)
+end
+
+"""
+    GoalFunction()
 
 An objective attribute for the `AbstractFunction` object used to define the objective.
 It is guaranteed to be equivalent but not necessarily identical to the function provided by the user.
 """
-struct ObjFunction <: AbstractObjectiveAttribute end
+struct GoalFunction <: AbstractGoalAttribute end
 
-attribute_value_type(::ObjFunction) = AbstractFunction
+attribute_value_type(::GoalFunction) = AbstractFunction
+
+function get_fallback(model :: ModelLike, attr::GoalFunction, ::GoalIndex{F,S}) where{F,S}
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = ObjectiveFunction{F}()
+    return get(model, old_attr)
+end
 
 struct FunctionTypeMismatch{F1,F2} <: Exception end
 function Base.showerror(io::IO, err::FunctionTypeMismatch{F1,F2}) where {F1,F2}
     return print(
         io,
         """$(typeof(err)): Cannot modify functions of different types.
-  Objective type is $F1 while the replacement function is of type $F2.""",
+  Goal type is $F1 while the replacement function is of type $F2.""",
     )
 end
 
 function throw_set_error_fallback(
     ::ModelLike,
-    attr::ObjFunction,
-    ::ConstraintIndex{F,S},
+    attr::GoalFunction,
+    ::GoalIndex{F,S},
     ::F;
     error_if_supported = SetAttributeNotAllowed(attr),
 ) where {F<:AbstractFunction,S}
     return throw(error_if_supported)
 end
 
-func_type(c::ObjectiveIndex{F,S}) where {F,S} = F
+func_type(c::GoalIndex{F,S}) where {F,S} = F
 
 function throw_set_error_fallback(
     ::ModelLike,
-    ::ObjFunction,
-    ci::ObjectiveIndex,
+    ::GoalFunction,
+    oi::GoalIndex,
     func::AbstractFunction;
     kwargs...,
 )
-    return throw(FunctionTypeMismatch{func_type(ci),typeof(func)}())
+    return throw(FunctionTypeMismatch{func_type(oi),typeof(func)}())
 end
 
 """
-    ObjSense()
+    GoalSense()
 
 An objective attribute for the `OptimSense` object used to define the objective.
 """
-struct ObjSense <: AbstractObjectiveAttribute end
+struct GoalSense <: AbstractGoalAttribute end
 
-attribute_value_type(::ObjectiveSet) = AbstractSet
+attribute_value_type(::GoalSet) = AbstractSet
+
+function get_fallback(model :: ModelLike, attr::GoalSense, ::GoalIndex)
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = ObjectiveSense()
+    return get(model, old_attr)
+end
 
 struct SenseTypeMismatch{S1,S2} <: Exception end
 function Base.showerror(io::IO, err::SenseTypeMismatch{S1,S2}) where {S1,S2}
     return print(
         io,
-        """$(typeof(err)): Cannot modify sets of different types. Objective
+        """$(typeof(err)): Cannot modify sets of different types. Goal
   sense is $S1 while the replacement sense is of type $S2. Use `transform`
   instead.""",
     )
@@ -1633,18 +1721,18 @@ end
 
 function throw_set_error_fallback(
     ::ModelLike,
-    attr::ObjSense,
-    ::ObjectiveIndex{F,S},
+    attr::GoalSense,
+    ::GoalIndex{F,S},
     ::S;
     error_if_supported = SetAttributeNotAllowed(attr),
 ) where {F,S<:OptimSense}
     return throw(error_if_supported)
 end
-sense_type(::ObjectiveIndex{F,S}) where {F,S} = S
+sense_type(::GoalIndex{F,S}) where {F,S} = S
 function throw_set_error_fallback(
     ::ModelLike,
-    ::ObjSense,
-    objective_index::ObjectiveIndex,
+    ::GoalSense,
+    objective_index::GoalIndex,
     sense::OptimSense;
     kwargs...,
 )
@@ -1652,14 +1740,20 @@ function throw_set_error_fallback(
 end
 
 """
-    ObjBound()
+    GoalBound()
 
 An objective attribute for the best known bound on the optimal objective value.
 """
-struct ObjBound <: AbstractObjectiveAttribute end
+struct GoalBound <: AbstractGoalAttribute end
+
+function get_fallback(model :: ModelLike, attr::GoalBound, ::GoalIndex)
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = ObjectiveBound()
+    return get(model, old_attr)
+end
 
 """
-    ObjectiveRelativeGap()
+    GoalRelativeGap()
 
 An objective attribute for the final relative optimality gap.
 
@@ -1669,9 +1763,15 @@ An objective attribute for the final relative optimality gap.
     ``\\frac{|b-f|}{|f|}``, where ``b`` is the best bound and ``f`` is the best
     feasible objective value.
 """
-struct ObjectiveRelativeGap <: AbstractObjectiveAttribute end
+struct GoalRelativeGap <: AbstractGoalAttribute end
 
-attribute_value_type(::ObjectiveRelativeGap) = Float64
+attribute_value_type(::GoalRelativeGap) = Float64
+
+function get_fallback(model :: ModelLike, attr::GoalRelativeGap, ::GoalIndex)
+    is_multi_model(model) && throw_get_attr_error(model, attr)
+    old_attr = RelativeGap()
+    return get(model, old_attr)
+end
 
 ## Constraint attributes
 
@@ -1898,14 +1998,14 @@ struct ConstraintFunction <: AbstractConstraintAttribute end
 
 attribute_value_type(::ConstraintFunction) = AbstractFunction
 
-struct FunctionTypeMismatch{F1,F2} <: Exception end
+#=struct FunctionTypeMismatch{F1,F2} <: Exception end
 function Base.showerror(io::IO, err::FunctionTypeMismatch{F1,F2}) where {F1,F2}
     return print(
         io,
         """$(typeof(err)): Cannot modify functions of different types.
   Constraint type is $F1 while the replacement function is of type $F2.""",
     )
-end
+end moved definiton up to Goal attributes=#
 
 function throw_set_error_fallback(
     ::ModelLike,
@@ -2233,6 +2333,19 @@ function get_fallback(
     return supports_add_constrained_variables(model, S) ? 0.0 : Inf
 end
 
+# Cost of bridging F-S objectives
+struct GoalBridgingCost{F<:AbstractFunction,S<:OptimSense} <:
+       AbstractModelAttribute end
+
+attribute_value_type(::GoalBridgingCost) = Float64
+
+function get_fallback(
+    model::ModelLike,
+    ::GoalBridgingCost{F,S},
+) where {F<:AbstractFunction,S<:OptimSense}
+    return supports_objective(model, F, S) ? 0.0 : Inf
+end
+
 # Cost of bridging F-in-S constraints
 struct ConstraintBridgingCost{F<:AbstractFunction,S<:AbstractSet} <:
        AbstractModelAttribute end
@@ -2261,10 +2374,10 @@ attributes that are modified by [`optimize!`](@ref).
 is_set_by_optimize(::AnyAttribute) = false
 function is_set_by_optimize(
     ::Union{
-        ObjectiveValue,
-        DualObjectiveValue,
-        ObjectiveBound,
-        RelativeGap,
+        ObjectiveValue,         # `GoalPrimal`
+        DualObjectiveValue,     # `GoalDual`
+        ObjectiveBound,         # `GoalBound`
+        RelativeGap,            # `GoalRelativeGap`
         SolveTimeSec,
         SimplexIterations,
         BarrierIterations,
@@ -2282,6 +2395,10 @@ function is_set_by_optimize(
         ConstraintDual,
         ConstraintBasisStatus,
         VariableBasisStatus,
+        GoalPrimal,
+        GoalDual,
+        GoalBound,
+        GoalRelativeGap
     },
 )
     return true
@@ -2322,21 +2439,30 @@ function is_copyable(
     ::Union{
         ListOfOptimizerAttributesSet,
         ListOfModelAttributesSet,
-        ListOfConstraintAttributesSet,
+        ListOfConstraintAttributesSet,  # `ListOfGoalAttributesSet`
         ListOfVariableAttributesSet,
         SolverName,
         RawSolver,
         NumberOfVariables,
         ListOfVariableIndices,
-        NumberOfConstraints,
-        ObjectiveFunctionType,
-        ListOfConstraintIndices,
-        ListOfConstraintTypesPresent,
-        CanonicalConstraintFunction,
-        ConstraintFunction,
-        ConstraintSet,
+        NumberOfConstraints,            # `NumberOfGoals`
+        ObjectiveFunctionType,          # `GoalFunctionType`
+        ListOfConstraintIndices,        # `ListOfGoalIndices`
+        ListOfConstraintTypesPresent,   # `ListOfGoalTypesPresent`
+        CanonicalConstraintFunction,    # `CanonicalGoalFunction`
+        ConstraintFunction,             # `GoalFunction`
+        ConstraintSet,                  # `GoalSense`
         VariableBridgingCost,
-        ConstraintBridgingCost,
+        ConstraintBridgingCost,         # `GoalBridgingCost`
+        ListOfGoalAttributesSet,
+        NumberOfGoals,
+        GoalFunctionType,
+        ListOfGoalIndices,
+        ListOfGoalTypesPresent,
+        CanonicalGoalFunction,
+        GoalFunction,
+        GoalSense,
+        GoalBridgingCost
     },
 )
     return false
