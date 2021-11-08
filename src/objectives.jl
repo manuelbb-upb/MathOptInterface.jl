@@ -128,6 +128,11 @@ end
 # default fallback
 function transform(model::ModelLike, o::GoalIndex, new_sense)
     f = get(model, GoalFunction(), o)
-    delete(model, o)
+    delete_fallback(model, o)
     return add_objective(model, f, new_sense)
+end
+
+function delete_fallback(model::ModelLike, o::GoalIndex)
+	!is_multi_model(model) && return nothing
+	return delete(model, o)
 end

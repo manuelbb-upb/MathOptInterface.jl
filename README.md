@@ -1,5 +1,30 @@
 # VecMathOptInterface
-### MathOptInterface with multiple objectives
+### MathOptInterface with Multiple Objectives
+
+The main idea of this fork is to explore the possibility of treating objective functions 
+similar to constraints.
+It is motivated by [this issue](https://github.com/jump-dev/JuMP.jl/issues/2099) regarding multi-objective
+optimization in `MathOptInterface` (and possibly `JuMP`).
+As you can read in that conversation, there are basically two ways to go:
+* [Perform a 1 line change](https://github.com/jump-dev/JuMP.jl/issues/2099#issuecomment-562414044) to enable 
+  `AbstractVectorFunction`s as objectives.
+* Or, do what I am trying here, which involves some major changes to the inner architecture (detailed below). 
+Unfamiliar then with the inner workings of MOI, I opted for treating multiple objectives separately.
+This is certainly overkill for multi-objective linear or quadratic optimization (I realize now) but could come in handy with nonlinear objectives (and when JuMP is adapted).
+
+#### What is new?
+
+* Objectives are meant to be added via `add_objective`. 
+* To provide some backwards compatibility with the old `set` routine, old types are kept for now and new types 
+  are prefixed with `Goal` instead of `Objective`.
+* Just like constraints, objectives now have an index type `GoalIndex{F,S}` where `F<:AbstractFunction` and `S<:OptimSense`.
+* There is an abstract super type `OptimSense` with subtypes `MinSense, MaxSense, FeasibiltiySense`. 
+  These are meant to replace `OptimizationSense` and are to objectives what sets are to constraints.
+* There are many new attributes, both `AbstractModelAttribute`s and `AbstractGoalAttribute`s.
+
+#### What is next?
+I am currently trying to understand how bridging works. 
+Bridges for individual objectives should open up many interesting possibilities, but for now I would be content with flipping signs and transforming a minimization problem into a maximization problem.
 
 ## Links and Information for the Original Package
 
