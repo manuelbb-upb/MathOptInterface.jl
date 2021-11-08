@@ -8,7 +8,7 @@ optimization in `MathOptInterface` (and possibly `JuMP`).
 As you can read in that conversation, there are basically two ways to go:
 * [Perform a 1 line change](https://github.com/jump-dev/JuMP.jl/issues/2099#issuecomment-562414044) to enable 
   `AbstractVectorFunction`s as objectives.
-* Or, do what I am trying here, which involves some major changes to the inner architecture (detailed below). 
+* Or, do what I am trying here, which involves some major changes to the inner architecture (outlined below). 
 Unfamiliar then with the inner workings of MOI, I opted for treating multiple objectives separately.
 This is certainly overkill for multi-objective linear or quadratic optimization (I realize now) but could come in handy with nonlinear objectives (and when JuMP is adapted).
 
