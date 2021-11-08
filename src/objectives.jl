@@ -15,6 +15,7 @@ function supports_objective(
 	) where{F<:AbstractFunction, S<:OptimSense}
 	if !(is_multi_model(model))
 		return supports_single_objective(model,F,S)
+	end
     return false
 end
 
@@ -22,7 +23,7 @@ end
 # to check whether model supports F-S objectives via the "old" interface
 function supports_single_objective( 
 	model :: ModelLike,
-	::Type{F}
+	::Type{F},
 	::Type{S} ) where{F<:AbstractFunction, S<:OptimSense}
 	return(
 		supports(model, ObjectiveFunction{F}()) && 
@@ -78,7 +79,7 @@ Add the objective ``f: ℝⁿ → ℝᵏ`` to `model`, where ``f`` is defined by
 
 function add_objective(
 		model::ModelLike,
-		func::F
+		func::F,
 		sense::S
 	) where {F<:AbstractFunction,S<:OptimSense}
 
@@ -122,4 +123,11 @@ function add_objectives end
 # default fallback
 function add_objectives(model::ModelLike, funcs, senses)
     return add_objective.(model, funcs, sets)
+end
+ 
+# default fallback
+function transform(model::ModelLike, o::GoalIndex, new_sense)
+    f = get(model, GoalFunction(), o)
+    delete(model, o)
+    return add_objective(model, f, new_sense)
 end

@@ -499,8 +499,19 @@ function set(
 end
 
 function set(model::ModelLike, attr::AnyAttribute, args...)
+    if !(is_multi_model(model))
+        return set_single_objective_fallback(model, attr, args...)
+    else
+        return throw_set_error_fallback(model, attr, args...)
+    end
+end
+
+# `set_single_objective_fallback` is used to provide a compatibility layer for new 
+# multi objective attributes (starting with `Goal`)
+function set_single_objective_fallback(model::ModelLike, attr::AnyAttribute, args...)
     return throw_set_error_fallback(model, attr, args...)
 end
+
 # throw_set_error_fallback is included so that we can return type-specific error
 # messages without needing to overload set and cause ambiguity errors. For
 # examples, see ConstraintSet and ConstraintFunction. throw_set_error_fallback should
@@ -973,8 +984,8 @@ attribute_value_type(::Name) = String
 An attribute a model should use indicate that it is a multi-objective optimization
 problem or solver.
 """
-struct SupportsMultipleGoals <: MOI.AbstractModelAttribute end	
-MOI.attribute_value_type( ::SupportsMultipleGoals ) = Bool
+struct SupportsMultipleGoals <: AbstractModelAttribute end	
+attribute_value_type( ::SupportsMultipleGoals ) = Bool
 
 # NOTE: I define a default here so that I can use `get(model, SupportsMultipleGoals())`
 # to check whether a multi-objective interface is implemented.
@@ -1077,6 +1088,17 @@ A model attribute for the `Vector{GoalIndex{F,S}}` of all objective indices of t
 """
 struct ListOfGoalIndices{F,S} <: AbstractModelAttribute end
 
+func_and_sense_type(attr::ListOfGoalIndices{F,S}) where {F,S} = (F,S)
+function get_fallback(model :: ModelLike, attr::ListOfGoalIndices)
+    is_multi_model(model) && return throw_get_attr_error(model, attr)
+    (F,S) = get_fallback( model, ListOfGoalTypesPresent() )[1]
+    if func_and_sense_type( attr ) == (F,S)
+        return [ GoalIndex{F,S}(-1), ]
+    else
+        return []
+    end
+end
+
 """
     NumberOfGoals{F,S}()
 
@@ -1086,6 +1108,14 @@ struct NumberOfGoals{F,S} <: AbstractModelAttribute end
 
 attribute_value_type(::NumberOfGoals) = Int64
 
+func_and_sense_type(attr::NumberOfGoals{F,S}) where {F,S} = (F,S)
+function get_fallback(model :: ModelLike, attr::NumberOfGoals)
+    is_multi_model(model) && return throw_get_attr_error(model, attr)
+    return length( get_fallback(model, ListOfGoalIndices{func_and_sense_type(attr)...}()) ) 
+    # instead of returning 1 we call `get_fallback` so that it errors 
+    # if `ObjectiveFunction` is not yet set
+end
+
 """
     ListOfGoalTypesPresent()
 
@@ -1094,6 +1124,13 @@ and `S` is a `OptimSense` type indicating that the attribute `NumberOfGoals{F,S}
 has value greater than zero.
 """
 struct ListOfGoalTypesPresent <: AbstractModelAttribute end
+
+function get_fallback(model :: ModelLike, attr::ListOfGoalTypesPresent)
+    is_multi_model(model) && return throw_get_attr_error(model, attr)
+    F = get(model, ObjectiveFunctionType() )
+    S = _optim_sense_type( get(model, ObjectiveSense()) )
+    return [(F,S),]
+end
 
 # NOTE / TODO
 # the blow `AbstractModelAttribute`s should be deprecated in favor of 
@@ -1657,9 +1694,10 @@ struct GoalFunction <: AbstractGoalAttribute end
 
 attribute_value_type(::GoalFunction) = AbstractFunction
 
-function get_fallback(model :: ModelLike, attr::GoalFunction, ::GoalIndex{F,S}) where{F,S}
+func_type(c::GoalIndex{F,S}) where {F,S} = F
+function get_fallback(model :: ModelLike, attr::GoalFunction, oi::GoalIndex)
     is_multi_model(model) && throw_get_attr_error(model, attr)
-    old_attr = ObjectiveFunction{F}()
+    old_attr = ObjectiveFunction{func_type(oi)}()
     return get(model, old_attr)
 end
 
@@ -1672,6 +1710,20 @@ function Base.showerror(io::IO, err::FunctionTypeMismatch{F1,F2}) where {F1,F2}
     )
 end
 
+function set_single_objective_fallback(
+    model::ModelLike, 
+    attr::GoalFunction,
+    ::GoalIndex{F,S},
+    new_func::F
+) where {F<:AbstractFunction, S}
+    set(model, ObjectiveFunction(), new_func)
+    # TODO within the new interface we do not allow changing a function 
+    # to something of a different type. 
+    # In the old interface, we could however do multiple calls 
+    # `set(model, ObjectiveFunction{G}, new_func)`
+    # and this is what was done in JuMP by `set_objective`
+end
+
 function throw_set_error_fallback(
     ::ModelLike,
     attr::GoalFunction,
@@ -1681,8 +1733,6 @@ function throw_set_error_fallback(
 ) where {F<:AbstractFunction,S}
     return throw(error_if_supported)
 end
-
-func_type(c::GoalIndex{F,S}) where {F,S} = F
 
 function throw_set_error_fallback(
     ::ModelLike,
@@ -1701,7 +1751,7 @@ An objective attribute for the `OptimSense` object used to define the objective.
 """
 struct GoalSense <: AbstractGoalAttribute end
 
-attribute_value_type(::GoalSet) = AbstractSet
+attribute_value_type(::GoalSense) = OptimSense
 
 function get_fallback(model :: ModelLike, attr::GoalSense, ::GoalIndex)
     is_multi_model(model) && throw_get_attr_error(model, attr)
@@ -1718,6 +1768,11 @@ function Base.showerror(io::IO, err::SenseTypeMismatch{S1,S2}) where {S1,S2}
   instead.""",
     )
 end
+
+# NOTE with the new multi-objective interface, different `OptimSense`s 
+# have different types. 
+# So defining `set_single_objective_fallback` would only make sense if 
+# we would allow changing `GoalSense` to another type.
 
 function throw_set_error_fallback(
     ::ModelLike,

@@ -72,7 +72,7 @@ Base.hash(v::VariableIndex, h::UInt) = hash(v.value, h)
 # No need to define isequal because the default matches our implementation of
 # hash.
 
-const Index = Union{ConstraintIndex,VariableIndex}
+const Index = Union{ConstraintIndex,VariableIndex,GoalIndex}
 
 """
     struct InvalidIndex{IndexType<:Index} <: Exception

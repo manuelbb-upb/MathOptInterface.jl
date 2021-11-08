@@ -102,6 +102,14 @@ end
 
 function modify(
     model::ModelLike,
+    oi::GoalIndex,
+    change::AbstractFunctionModification,
+)
+    return throw_modify_not_allowed(oi, change)
+end
+
+function modify(
+    model::ModelLike,
     attr::ObjectiveFunction,
     change::AbstractFunctionModification,
 )
