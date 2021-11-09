@@ -15,11 +15,9 @@ const _PDF = findfirst(isequal("--pdf"), ARGS) !== nothing || _IS_GITHUB_ACTIONS
 # ==============================================================================
 
 const _PAGES = [
-    "Introduction" => "index.md",
-    "Background" => [
+    "Introduction" => [
+        "index.md",
         "background/motivation.md",
-        "background/duality.md",
-        "background/naming_conventions.md",
     ],
     "Tutorials" => [
         "tutorials/example.md",
@@ -36,6 +34,10 @@ const _PAGES = [
         "manual/constraints.md",
         "manual/solutions.md",
         "manual/modification.md",
+    ],
+    "Background" => [
+        "background/duality.md",
+        "background/naming_conventions.md",
     ],
     "API Reference" => [
         "reference/standard_form.md",
@@ -99,6 +101,8 @@ const _PAGES = [
 
 if _PDF
     latex_platform = _IS_GITHUB_ACTIONS ? "docker" : "native"
+    # Remove the Release Notes; we don't need them in the PDF.
+    pop!(_PAGES)
     @time Documenter.makedocs(
         sitename = "VecMathOptInterface",
         authors = "The JuMP core developers and contributors",

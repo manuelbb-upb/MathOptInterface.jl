@@ -1411,7 +1411,7 @@ function test_solve_conflict_zeroone_ii(
     model::MOI.ModelLike,
     config::Config{T},
 ) where {T}
-    @requires !(T <: Integer)
+    @requires (one(T) / T(2)) isa T
     @requires _supports(config, MOI.compute_conflict!)
     @requires _supports(config, MOI.optimize!)
     try
@@ -1423,7 +1423,7 @@ function test_solve_conflict_zeroone_ii(
     c2 = MOI.add_constraint(
         model,
         MOI.ScalarAffineFunction(MOI.ScalarAffineTerm.(one(T), [x]), zero(T)),
-        MOI.EqualTo(div(one(T), T(2))),
+        MOI.EqualTo(one(T) / T(2)),
     )
     MOI.optimize!(model)
     @test MOI.get(model, MOI.TerminationStatus()) == MOI.INFEASIBLE
