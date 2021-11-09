@@ -1,6 +1,6 @@
 name = "VecMathOptInterface"
 uuid = "a6b939ee-c061-4853-9c69-78e5598560e6"
-version = "0.10.4"
+version = "0.10.5"
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
